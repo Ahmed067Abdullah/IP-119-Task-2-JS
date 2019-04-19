@@ -1,7 +1,8 @@
-import React from 'react';
+import React from "react";
 
 const room = props => {
-    return <div>Room</div>
-}
+  const { name } = props.room;
+  return <div>{name}</div>;
+};
 
 export default room;

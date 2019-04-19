@@ -1,7 +1,14 @@
-import React from 'react';
+import React from "react";
+import Room from "./Room/Room";
 
 const rooms = props => {
-    return <div>Rooms</div>
-}
+  const rooms = props.rooms.map(room => <Room room={room} />);
+  return (
+    <div>
+      <h1>Rooms</h1>
+      {rooms}
+    </div>
+  );
+};
 
 export default rooms;

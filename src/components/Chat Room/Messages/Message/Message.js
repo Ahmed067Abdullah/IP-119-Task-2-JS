@@ -1,7 +1,8 @@
-import React from 'react';
+import React from "react";
 
 const message = props => {
-    return <div>Message</div>
-}
+  const { posted_by, text } = props.message;
+  return <div>{`${posted_by} : ${text}`}</div>;
+};
 
 export default message;

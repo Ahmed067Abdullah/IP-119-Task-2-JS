@@ -1,7 +1,14 @@
-import React from 'react';
+import React from "react";
+import Message from "./Message/Message";
 
 const messages = props => {
-    return <div>Messages</div>
-}
+  const messages = props.messages.map(message => <Message message={message} />);
+  return (
+    <div>
+      <h1>Messages</h1>
+      {messages}
+    </div>
+  );
+};
 
 export default messages;

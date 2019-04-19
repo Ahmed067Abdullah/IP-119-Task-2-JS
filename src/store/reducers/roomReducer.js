@@ -10,18 +10,16 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_ROOM:
-      console.log(action.payload);
       return {
         ...state,
         room : {...action.payload.room},
-        members: {...action.payload.members},
-        messages: {...action.payload.messages}
+        members: [...action.payload.members],
+        messages: [...action.payload.messages]
       };
     case actionTypes.SET_ROOMS_LIST:
-      console.log(action.payload);
       return {
         ...state,
-        rooms: {...action.payload}
+        rooms: [...action.payload]
       };
     case actionTypes.SIGNOUT:
       return initialState;

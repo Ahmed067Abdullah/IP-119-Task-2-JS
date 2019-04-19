@@ -1,7 +1,8 @@
-import React from 'react';
+import React from "react";
 
 const member = props => {
-    return <div>Member</div>
-}
+  const { name } = props.member;
+  return <div>{name}</div>;
+};
 
 export default member;

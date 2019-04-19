@@ -21,7 +21,8 @@ export const getRoom = rid => dispatch => {
 
       const room = {
         created_at: roomData.created_at,
-        invite_code: roomData.invite_code
+        invite_code: roomData.invite_code,
+        name: roomData.name
       };
       const payload = { room, members, messages };
 
