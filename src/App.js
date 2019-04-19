@@ -1,28 +1,70 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { connect } from "react-redux";
+import getRoutes from "./routes";
+import "./App.css";
 
 class App extends Component {
   render() {
+    let routes = getRoutes(this.props.status);
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Router>
+        <div className="App">
+          {/* <Navbar /> */}
+          <div style={{ marginTop: 70 }}>{routes}</div>
+        </div>
+      </Router>
     );
   }
 }
 
 export default App;
+
+// import React, { Component } from "react";
+
+// import { setSignedIn } from "./store/actions/authActions";
+
+// import Navbar from "./components/Navbar/Navbar";
+//
+
+// class App extends Component {
+//   componentDidMount() {
+//     this.checkLoggedIn();
+//   }
+
+//   checkLoggedIn = () => {
+//     const user = JSON.parse(localStorage.getItem("crs"));
+//     if (user) {
+//       this.props.setSignedIn(user);
+//     }
+//   };
+
+//   render() {
+//     let routes = getRoutes(this.props.status);
+//     return (
+//       <Router>
+//         <div className="App">
+//           <Navbar />
+//           <div style={{ marginTop: 70 }}>{routes}</div>
+//         </div>
+//       </Router>
+//     );
+//   }
+// }
+
+// const mapStateToProps = state => {
+//   return {
+//     status: state.auth.status
+//   };
+// };
+
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     setSignedIn: user => dispatch(setSignedIn(user))
+//   };
+// };
+
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(App);
