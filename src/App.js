@@ -10,8 +10,7 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          {/* <Navbar /> */}
-          <div style={{ marginTop: 70 }}>{routes}</div>
+          {routes}
         </div>
       </Router>
     );

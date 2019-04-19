@@ -34,7 +34,7 @@ export const signup = payload => dispatch => {
         .ref(`users/${uid}`)
         .set(user)
         .then(() => {
-          database.ref(`rooms/${uid}`).set({
+          database().ref(`rooms/${uid}`).set({
             invite_code : "abc",
             created_at : Date.now(),
             members : []

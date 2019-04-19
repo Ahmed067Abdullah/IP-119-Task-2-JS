@@ -1,0 +1,13 @@
+.main{
+    display : flex;
+}
+
+.members,.rooms{
+    flex : 1;
+    background-color : green;
+}
+
+.messages{
+    flex : 2;
+    background-color : red;
+}

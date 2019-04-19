@@ -29,14 +29,12 @@ class SignUp extends Component {
 
   handleChange = event => {
     const { name, value } = event.target;
-    console.log("ch",name,value)
     this.setState({
       [name]: value
     });
   };
 
   handleSubmit = () => {
-      console.log("Herer")
     const { onSignUp, onSignIn, history } = this.props;
     const { email, password, name } = this.state;
     const payload = { email, password, name, history };
