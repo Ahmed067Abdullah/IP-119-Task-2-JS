@@ -12,10 +12,10 @@ import Spinner from "../../components/UI Components/Spinner/Spinner";
 
 class SignUp extends Component {
   state = {
-    email: "",
-    password: "",
-    rePass: "",
-    name: "",
+    email: "a@gmail.com",
+    password: "123456",
+    rePass: "123456",
+    name: "ahmed",
     loading: false,
     error: "",
     signUp: true
@@ -29,14 +29,19 @@ class SignUp extends Component {
 
   handleChange = event => {
     const { name, value } = event.target;
+    console.log("ch",name,value)
     this.setState({
       [name]: value
     });
   };
 
   handleSubmit = () => {
+      console.log("Herer")
     const { onSignUp, onSignIn, history } = this.props;
-    this.state.signUp ? onSignUp(history) : onSignIn(history);
+    const { email, password, name } = this.state;
+    const payload = { email, password, name, history };
+    this.state.signUp ? onSignUp(payload) : onSignIn(payload);
+    return false;
   };
 
   render() {
@@ -45,10 +50,9 @@ class SignUp extends Component {
       password,
       rePass,
       name,
-      loading,
-      error,
       signUp
     } = this.state;
+    const {loading, error} = this.props.auth;
     let heading = "Sign In";
     let toggleText = (
       <p>
@@ -74,17 +78,17 @@ class SignUp extends Component {
             <Card>
               <h2 className="singin-heading">{heading}</h2>
               <p className="Error">{error ? error : null}</p>
-              <form onSubmit={this.handleSubmit}>
+              {/* <form onSubmit="return this.handleSubmit()"> */}
                 <Input
                   label="Email"
-                  onChange={this.handleChange}
+                  changed={this.handleChange}
                   name="email"
                   value={email}
                 />
                 {signUp ? (
                   <Input
                     label="Name"
-                    onChange={this.handleChange}
+                    changed={this.handleChange}
                     name="name"
                     value={name}
                   />
@@ -94,7 +98,7 @@ class SignUp extends Component {
                 <Input
                   label="Password"
                   type="password"
-                  onChange={this.handleChange}
+                  changed={this.handleChange}
                   name="password"
                   value={password}
                 />
@@ -102,15 +106,15 @@ class SignUp extends Component {
                   <Input
                     label="Repeat Password"
                     type="password"
-                    onChange={this.handleChange}
+                    changed={this.handleChange}
                     name="rePass"
                     value={rePass}
                   />
                 ) : (
                   ""
                 )}
-                <Button className="auth-button">{heading}</Button>
-              </form>
+                <Button className="auth-button" clicked={this.handleSubmit}>{heading}</Button>
+              {/* </form> */}
               {toggleText}
             </Card>
           ) : (
@@ -137,9 +141,8 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(withStyles(styles)(SignUp));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SignUp);
 
-export default SignUp;
