@@ -3,7 +3,8 @@ import * as actionTypes from "../actions/actionTypes";
 const initialState = {
   rooms: [],
   members: [],
-  messages: []
+  messages: [],
+  room : {}
 };
 
 const reducer = (state = initialState, action) => {
@@ -12,14 +13,15 @@ const reducer = (state = initialState, action) => {
       console.log(action.payload);
       return {
         ...state,
-        members: action.payload.members,
-        messages: action.payload.messages
+        room : {...action.payload.room},
+        members: {...action.payload.members},
+        messages: {...action.payload.messages}
       };
     case actionTypes.SET_ROOMS_LIST:
       console.log(action.payload);
       return {
         ...state,
-        rooms: action.payload.rooms
+        rooms: {...action.payload}
       };
     case actionTypes.SIGNOUT:
       return initialState;

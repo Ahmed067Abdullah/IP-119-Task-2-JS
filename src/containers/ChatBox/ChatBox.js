@@ -7,14 +7,15 @@ import Messages from "../../components/Chat Room/Messages/Messages";
 import Rooms from "../../components/Chat Room/Rooms/Rooms";
 
 class ChatBox extends Component {
-    state = {
-        message : ""
-    }
-  
-    componentDidMount() {
-    const { getRoom, match } = this.props;
+  state = {
+    message: ""
+  };
+
+  componentDidMount() {
+    const { getRoom, getRoomsList, match, auth } = this.props;
     const rid = match.params.id;
     getRoom(rid);
+    getRoomsList(auth.uid);
   }
 
   handleChange = event => {
@@ -24,11 +25,18 @@ class ChatBox extends Component {
     });
   };
 
-  sendMessage = () => {
-      console.log("Sending message",this.state.message);
-  }
+  send = () => {
+    const { sendMessage, room, auth } = this.props;
+    let uid = "123";
+    sendMessage({
+      message: this.state.message,
+      room,
+      uid
+    });
+  };
 
   render() {
+    console.log("[room reducer]: ", this.props.room);
     return (
       <div className={classes.main}>
         <div className={classes.members}>
@@ -36,16 +44,12 @@ class ChatBox extends Component {
         </div>
         <div className={classes.messages}>
           <Messages />
-            <input
-                value={this.state.message}
-                onChange={this.handleChange}
-                name="message"
-            />
-            <input
-             type="button"
-             onClick={this.sendMessage}
-             value="Send"
-            />
+          <input
+            value={this.state.message}
+            onChange={this.handleChange}
+            name="message"
+          />
+          <input type="button" onClick={this.send} value="Send" />
         </div>
         <div className={classes.rooms}>
           <Rooms />
@@ -57,13 +61,16 @@ class ChatBox extends Component {
 
 const mapStateToProps = state => {
   return {
-    room: state.room
+    room: state.room,
+    auth: state.auth
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    getRoom: rid => dispatch(actions.getRoom(rid))
+    getRoom: rid => dispatch(actions.getRoom(rid)),
+    getRoomsList: uid => dispatch(actions.getRoomsList(uid)),
+    sendMessage: text => dispatch(actions.sendMessage(text))
   };
 };
 
