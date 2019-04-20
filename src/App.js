@@ -23,9 +23,6 @@ export default App;
 
 // import { setSignedIn } from "./store/actions/authActions";
 
-// import Navbar from "./components/Navbar/Navbar";
-//
-
 // class App extends Component {
 //   componentDidMount() {
 //     this.checkLoggedIn();
@@ -37,18 +34,6 @@ export default App;
 //       this.props.setSignedIn(user);
 //     }
 //   };
-
-//   render() {
-//     let routes = getRoutes(this.props.status);
-//     return (
-//       <Router>
-//         <div className="App">
-//           <Navbar />
-//           <div style={{ marginTop: 70 }}>{routes}</div>
-//         </div>
-//       </Router>
-//     );
-//   }
 // }
 
 // const mapStateToProps = state => {

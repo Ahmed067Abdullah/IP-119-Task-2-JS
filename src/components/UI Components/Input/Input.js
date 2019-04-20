@@ -2,7 +2,7 @@ import React from "react";
 import classes from "./Input.module.css";
 
 const input = props => {
-  const { placeholder, changed, className, label, value, type, name } = props;
+  const { placeholder, changed, label, value, type, name } = props;
   return (
     <div>
       <label>

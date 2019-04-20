@@ -5,6 +5,7 @@ import * as actionTypes from "./actionTypes";
 export const getRoom = rid => dispatch => {
   dispatch(dispatcher(actionTypes.START_LOADING));
   console.log("fetching for", rid);
+
   database()
     .ref(`/rooms/${rid}`)
     .on("value", snapshot => {
@@ -25,6 +26,7 @@ export const getRoom = rid => dispatch => {
         invite_code: roomData.invite_code,
         name: roomData.name
       };
+
       const payload = { room, members, messages };
 
       dispatch(dispatcher(actionTypes.SET_ROOM, payload));
@@ -35,6 +37,7 @@ export const getRoom = rid => dispatch => {
 export const getRoomsList = uid => dispatch => {
   dispatch(dispatcher(actionTypes.START_LOADING));
   console.log("fetching rooms for", uid);
+
   database()
     .ref("/rooms/")
     .on("value", snapshot => {
@@ -59,6 +62,7 @@ export const getRoomsList = uid => dispatch => {
 
 export const sendMessage = payload => dispatch => {
   const { room, text, uid, posted_by } = payload;
+
   database()
     .ref(`rooms/${room}/messages`)
     .push({
@@ -70,14 +74,45 @@ export const sendMessage = payload => dispatch => {
   console.log("sent");
 };
 
-export const createRoom = payload => dispatch => {
+export const createRoom = payload => async dispatch => {
   console.log("creating room");
-  database()
+  const { name, uid } = payload;
+  await database()
     .ref("/rooms")
     .push({
-      admin: payload.uid,
-      members: ["USER DETAILS HERE"]
+      admin: uid,
+      created_at: Date.now(),
+      name
     });
+
+  // await database()
+  //   .ref(`rooms/${uid}/members`)
+  //   .push({ name, uid });
+};
+
+export const addMember = payload => async dispatch => {
+  // const {rid} = payload;
+  const { name, uid, rid } = payload;
+  const res = await database()
+    .ref(`rooms/${rid}`)
+    .once("value");
+  const members = res.val().members;
+  let newMem = true;
+  for (let id in members) {
+    if (members[id].uid === uid) {
+      newMem = false;
+      break;
+    }
+  }
+  if (newMem) {
+    database()
+      .ref(`rooms/${rid}/members`)
+      .push({
+        name,
+        uid
+      });
+  }
+  console.log("new member:", newMem);
 };
 
 export const removeMember = payload => dispatch => {

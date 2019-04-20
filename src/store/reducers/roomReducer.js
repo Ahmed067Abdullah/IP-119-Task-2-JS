@@ -21,7 +21,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         rooms: [...action.payload]
       };
-    case actionTypes.SIGNOUT:
+    case actionTypes.LOGOUT:
       return initialState;
     default:
       return state;

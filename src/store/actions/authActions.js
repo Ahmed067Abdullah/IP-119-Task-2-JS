@@ -134,7 +134,15 @@ export const signin = payload => dispatch => {
     });
 };
 
-export const signout = () => dispatch => {
-  dispatch(dispatcher(actionTypes.SIGNOUT));
-  localStorage.removeItem("crs");
+export const setInvitedRoom = invited_to => {
+  return {
+    type: actionTypes.SET_INVITED_ROOM,
+    invited_to
+  };
+};
+
+export const logout = history => dispatch => {
+  dispatch(dispatcher(actionTypes.LOGOUT));
+  localStorage.removeItem("chat-box");
+  history.replace("/auth");
 };
