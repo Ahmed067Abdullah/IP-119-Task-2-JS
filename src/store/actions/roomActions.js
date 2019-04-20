@@ -43,8 +43,12 @@ export const getRoomsList = uid => dispatch => {
 
       const rooms = [];
       for (let key in roomsObj) {
-        if (true) {
-          rooms.push({ id: key, ...roomsObj[key] });
+        const members = roomsObj[key].members;
+        for (let member in members) {
+          if (members[member].uid === uid) {
+            rooms.push({ id: key, name: roomsObj[key].name });
+            break;
+          }
         }
       }
 

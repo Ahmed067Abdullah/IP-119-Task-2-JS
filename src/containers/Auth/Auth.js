@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/authActions";
@@ -15,9 +14,7 @@ class SignUp extends Component {
     email: "a@gmail.com",
     password: "123456",
     rePass: "123456",
-    name: "ahmed",
-    loading: false,
-    error: "",
+    name: "Ahmed",
     signUp: true
   };
 
@@ -34,7 +31,8 @@ class SignUp extends Component {
     });
   };
 
-  handleSubmit = () => {
+  handleSubmit = (e) => {
+    e.preventDefault();
     const { onSignUp, onSignIn, history } = this.props;
     const { email, password, name } = this.state;
     const payload = { email, password, name, history };
@@ -76,7 +74,7 @@ class SignUp extends Component {
             <Card>
               <h2 className="singin-heading">{heading}</h2>
               <p className="Error">{error ? error : null}</p>
-              {/* <form onSubmit="return this.handleSubmit()"> */}
+              <form onSubmit={this.handleSubmit}>
                 <Input
                   label="Email"
                   changed={this.handleChange}
@@ -112,7 +110,7 @@ class SignUp extends Component {
                   ""
                 )}
                 <Button className="auth-button" clicked={this.handleSubmit}>{heading}</Button>
-              {/* </form> */}
+              </form>
               {toggleText}
             </Card>
           ) : (

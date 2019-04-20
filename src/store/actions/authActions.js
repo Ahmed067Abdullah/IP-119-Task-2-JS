@@ -23,6 +23,52 @@ export const setSignedIn = user => dispatch => {
   loginSuccessful(dispatch, uid, name, status, type);
 };
 
+// export const signup = payload => dispatch => {
+//   const { name, email, password, history } = payload;
+//   const user = { email, name };
+
+//   dispatch(dispatcher(actionTypes.START_LOADING));
+//   auth()
+//     .createUserWithEmailAndPassword(email, password)
+//     .then(res => {
+//       const uid = res.user.uid;
+//       database()
+//         .ref(`users/${uid}`)
+//         .set(user)
+//         .then(() => {
+//           database()
+//             .ref(`rooms/${uid}`)
+//             .set({
+//               admin: uid,
+//               created_at: Date.now(),
+//               name: `${name}'s Default Room`
+//             })
+//             .then(() => {
+//               database()
+//                 .ref(`rooms/${uid}/members`)
+//                 .push({
+//                   name,
+//                   uid
+//                 })
+//                 .then(() => {
+//                   loginSuccessful(dispatch, uid, name, history);
+//                 });
+//             });
+//         });
+//     })
+//     .catch(error => {
+//       dispatch(dispatcher(actionTypes.STOP_LOADING));
+//       let errorMessage = "";
+//       if (error.code === "auth/email-already-in-use")
+//         errorMessage = "Account For This Email is Already Registered";
+//       else if (error.code === "auth/invalid-email")
+//         errorMessage = "Invalid Email";
+//       else errorMessage = error.message;
+//       console.log(errorMessage);
+//       dispatch(dispatcher(actionTypes.AUTH_ERROR, { error: errorMessage }));
+//     });
+// };
+
 export const signup = payload => dispatch => {
   const { name, email, password, history } = payload;
   const user = { email, name };
@@ -30,20 +76,22 @@ export const signup = payload => dispatch => {
   dispatch(dispatcher(actionTypes.START_LOADING));
   auth()
     .createUserWithEmailAndPassword(email, password)
-    .then(res => {
+    .then(async res => {
       const uid = res.user.uid;
-      database()
+      await database()
         .ref(`users/${uid}`)
-        .set(user)
-        .then(() => {
-          database().ref(`rooms/${uid}`).set({
-            admin : uid,
-            created_at : Date.now(),
-            members : []
-          }).then(() => {
-            loginSuccessful(dispatch, uid, name, history);
-          })
+        .set(user);
+      await database()
+        .ref(`rooms/${uid}`)
+        .set({
+          admin: uid,
+          created_at: Date.now(),
+          name: `${name}'s Default Room`
         });
+      await database()
+        .ref(`rooms/${uid}/members`)
+        .push({ name, uid });
+      loginSuccessful(dispatch, uid, name, history);
     })
     .catch(error => {
       dispatch(dispatcher(actionTypes.STOP_LOADING));
@@ -53,7 +101,6 @@ export const signup = payload => dispatch => {
       else if (error.code === "auth/invalid-email")
         errorMessage = "Invalid Email";
       else errorMessage = error.message;
-      console.log(errorMessage);
       dispatch(dispatcher(actionTypes.AUTH_ERROR, { error: errorMessage }));
     });
 };
@@ -69,7 +116,8 @@ export const signin = payload => dispatch => {
         .ref(`users/${uid}`)
         .once("value")
         .then(res => {
-          if (res.val()) loginSuccessful(dispatch, uid, res.val().name, history);
+          if (res.val())
+            loginSuccessful(dispatch, uid, res.val().name, history);
         })
         .catch(err => {
           loginFailed(dispatch);
