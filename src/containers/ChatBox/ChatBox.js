@@ -28,23 +28,24 @@ class ChatBox extends Component {
   send = () => {
     const { sendMessage, room, auth } = this.props;
     sendMessage({
-      message: this.state.message,
-      room,
-      uid : auth.uid,
-      name : auth.name
+      text: this.state.message,
+      room: room.room.rid,
+      uid: auth.uid,
+      posted_by: auth.name
     });
+    this.setState({ message: "" });
   };
 
   render() {
     console.log("[room reducer]: ", this.props.room);
-    const { messages, members, rooms} = this.props.room;
+    const { messages, members, rooms } = this.props.room;
     return (
       <div className={classes.main}>
         <div className={classes.members}>
-          <Members members={members}/>
+          <Members members={members} />
         </div>
         <div className={classes.messages}>
-          <Messages messages={messages}/>
+          <Messages messages={messages} />
           <input
             value={this.state.message}
             onChange={this.handleChange}
@@ -53,7 +54,7 @@ class ChatBox extends Component {
           <input type="button" onClick={this.send} value="Send" />
         </div>
         <div className={classes.rooms}>
-          <Rooms rooms={rooms}/>
+          <Rooms rooms={rooms} />
         </div>
       </div>
     );

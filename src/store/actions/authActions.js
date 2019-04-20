@@ -3,11 +3,13 @@ import * as actionTypes from "./actionTypes";
 import dispatcher from "../dispater";
 
 // helper functions
-const loginSuccessful = (dispatch, uid, name) => {
+const loginSuccessful = (dispatch, uid, name, history) => {
   const user = { uid, name };
   localStorage.setItem("chat-box", JSON.stringify(user));
   dispatch(dispatcher(actionTypes.AUTH_SUCCESSFUL, user));
   console.log("login successful", user);
+  history.replace(`/chatbox/${uid}`);
+  // history.replace(`/chatbox/ff1Cy3w7QnXCNlxNn9FTYb3sAjb2`);
 };
 
 const loginFailed = dispatch => {
@@ -35,13 +37,11 @@ export const signup = payload => dispatch => {
         .set(user)
         .then(() => {
           database().ref(`rooms/${uid}`).set({
-            invite_code : "abc",
+            admin : uid,
             created_at : Date.now(),
             members : []
           }).then(() => {
-            loginSuccessful(dispatch, uid, name);
-            console.log("sadsadsa",history);
-            history.replace(`/chatbox/${uid}`);
+            loginSuccessful(dispatch, uid, name, history);
           })
         });
     })
@@ -69,10 +69,7 @@ export const signin = payload => dispatch => {
         .ref(`users/${uid}`)
         .once("value")
         .then(res => {
-          if (res.val()) {
-            loginSuccessful(dispatch, uid, res.val().name);
-            history.replace(`/chatbox/${uid}`);
-          }
+          if (res.val()) loginSuccessful(dispatch, uid, res.val().name, history);
         })
         .catch(err => {
           loginFailed(dispatch);

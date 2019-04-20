@@ -20,6 +20,7 @@ export const getRoom = rid => dispatch => {
         messages.push({ id: key, ...roomData.messages[key] });
 
       const room = {
+        rid,
         created_at: roomData.created_at,
         invite_code: roomData.invite_code,
         name: roomData.name
@@ -41,8 +42,8 @@ export const getRoomsList = uid => dispatch => {
       console.log("fetched", roomsObj);
 
       const rooms = [];
-      for (let key in roomsObj){
-        if(true){
+      for (let key in roomsObj) {
+        if (true) {
           rooms.push({ id: key, ...roomsObj[key] });
         }
       }
@@ -53,7 +54,26 @@ export const getRoomsList = uid => dispatch => {
 };
 
 export const sendMessage = payload => dispatch => {
-  console.log("sending", payload);
+  const { room, text, uid, posted_by } = payload;
+  database()
+    .ref(`rooms/${room}/messages`)
+    .push({
+      text,
+      uid,
+      posted_by,
+      posted_at: Date.now()
+    });
+  console.log("sent");
+};
+
+export const createRoom = payload => dispatch => {
+  console.log("creating room");
+  database()
+    .ref("/rooms")
+    .push({
+      admin: payload.uid,
+      members: ["USER DETAILS HERE"]
+    });
 };
 
 export const removeMember = payload => dispatch => {
