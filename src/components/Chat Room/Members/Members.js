@@ -1,8 +1,10 @@
 import React from "react";
 import Member from "./Member/Member";
+import classes from "./Members.module.css";
 
 const members = props => {
   let members = "No members to show";
+
   if (props.members && props.members.length > 0) {
     members = props.members.map(member => (
       <Member
@@ -17,7 +19,7 @@ const members = props => {
 
   return (
     <div>
-      <h1>Members</h1>
+      <h1 className={classes.heading}>Members</h1>
       {members}
     </div>
   );

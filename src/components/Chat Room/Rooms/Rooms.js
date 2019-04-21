@@ -1,5 +1,6 @@
 import React from "react";
 import Room from "./Room/Room";
+import classes from "./Rooms.module.css";
 
 const rooms = props => {
   let rooms = "No Rooms to show";
@@ -11,7 +12,7 @@ const rooms = props => {
 
   return (
     <div>
-      <h1>Rooms</h1>
+      <h1 className={classes.heading}>Rooms</h1>
       {rooms}
     </div>
   );

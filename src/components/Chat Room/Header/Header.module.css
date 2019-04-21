@@ -1,0 +1,24 @@
+.header{
+    display: flex;
+    height : 60px;
+    position : fixed;
+    top : 0;
+    left : 0;
+    width: 100%;
+    background-color: #314f1a;
+    justify-content: space-around;
+    align-items: center;
+    color : #dfffc1;
+}
+
+.header > *{
+    margin : 0 10px;
+}
+
+.room_info{
+    margin-right: auto;
+}
+
+.info_val{
+    font-weight: bold;
+}

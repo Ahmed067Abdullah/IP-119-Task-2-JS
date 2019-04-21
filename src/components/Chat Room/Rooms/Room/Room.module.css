@@ -1,0 +1,18 @@
+.room {
+  color: white;
+  width: 80%;
+  background-color: #314f1a;
+  margin: 15px auto;
+  min-height: 35px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #dfffc1;
+  word-wrap: break-word;
+  padding : 5px 3px;
+}
+
+.room:hover {
+  cursor: pointer;
+}

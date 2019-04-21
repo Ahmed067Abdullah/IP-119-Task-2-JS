@@ -1,8 +1,8 @@
 import * as actionTypes from "../actions/actionTypes";
 
 const initialState = {
-  uid: "",
-  name: "",
+  uid: "R1KXP4gnEegAEYcw0AjoYoRy0RE3",
+  name: "Ahmed",
   loading: false,
   error: "",
   invited_to: ""

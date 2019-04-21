@@ -1,13 +1,22 @@
-.main{
-    display : flex;
+.container {
+  height: 100%;
+}
+.main {
+  display: flex;
+  margin-top: 60px;
+  height: 100%;
 }
 
-.members,.rooms{
-    flex : 1;
-    background-color : green;
+.main > * {
+  border-right: 1px solid #314f1a;
+  height: 100%;
 }
 
-.messages{
-    flex : 2;
-    background-color : red;
+.members,
+.rooms {
+  flex: 1;
+}
+
+.messages {
+  flex: 2;
 }

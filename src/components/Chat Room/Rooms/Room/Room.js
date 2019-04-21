@@ -1,9 +1,13 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import classes from "./Room.module.css";
 
 const room = props => {
-  const { name,id } = props.room;
-  return  <div onClick={() => props.setupRoom(id)}>{name}</div>;
+  const { name, id } = props.room;
+  return (
+    <div className={classes.room} onClick={() => props.setupRoom(id)}>
+      {name}
+    </div>
+  );
 };
 
 export default room;

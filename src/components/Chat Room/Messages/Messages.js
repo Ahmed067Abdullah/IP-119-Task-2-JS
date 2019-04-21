@@ -6,15 +6,10 @@ const messages = props => {
 
   if (props.messages && props.messages.length > 0) {
     messages = props.messages.map(message => (
-      <Message key={message.id} message={message} uid={props.uid}/>
+      <Message key={message.id} message={message} uid={props.uid} />
     ));
   }
-  return (
-    <div>
-      <h1>Messages</h1>
-      {messages}
-    </div>
-  );
+  return <div>{messages}</div>;
 };
 
 export default messages;

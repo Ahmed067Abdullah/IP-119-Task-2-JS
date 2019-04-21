@@ -1,14 +1,19 @@
 import React from "react";
+import classes from "./Member.module.css";
 
 const member = props => {
-  const { name, uid,id } = props.member;
+  const { name, uid, id } = props.member;
+
   return (
-    <div>
+    <div className={classes.member}>
       {name}
       {uid === props.admin || !props.canRemove ? (
         ""
       ) : (
-        <i className="fas fa-times" onClick={() => props.onRemoveMember(id)} />
+        <i
+          className={`fas fa-times ${classes.remove}`}
+          onClick={() => props.onRemoveMember(id)}
+        />
       )}
     </div>
   );

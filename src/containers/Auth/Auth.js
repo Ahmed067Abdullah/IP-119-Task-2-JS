@@ -1,13 +1,16 @@
 import React, { Component } from "react";
-
 import { connect } from "react-redux";
+
+// actions
 import * as actions from "../../store/actions/authActions";
 
+// UI components
 import Button from "../../components/UI Components/Button/Button";
 import Input from "../../components/UI Components/Input/Input";
-
 import Card from "../..//hoc/Card";
 import Spinner from "../../components/UI Components/Spinner/Spinner";
+
+// stylesheet
 import classes from "./Auth.module.css";
 
 class SignUp extends Component {
@@ -38,12 +41,13 @@ class SignUp extends Component {
     const { email, password, name } = this.state;
     const payload = { email, password, name, history };
     this.state.signUp ? onSignUp(payload) : onSignIn(payload);
-    return false;
   };
 
   render() {
     const { email, password, rePass, name, signUp } = this.state;
     const { loading, error } = this.props.auth;
+
+    // setting default values
     let heading = "Sign In";
     let toggleText = (
       <p className={classes.auth_toggle_para}>
@@ -54,6 +58,7 @@ class SignUp extends Component {
       </p>
     );
 
+    // changing default values if signing up
     if (signUp) {
       heading = "Sign Up";
       toggleText = (
@@ -82,6 +87,7 @@ class SignUp extends Component {
                     name="email"
                     value={email}
                   />
+                  
                   {signUp ? (
                     <Input
                       label="Name"
@@ -89,9 +95,8 @@ class SignUp extends Component {
                       name="name"
                       value={name}
                     />
-                  ) : (
-                    ""
-                  )}
+                  ) : ""}
+                  
                   <Input
                     label="Password"
                     type="password"
@@ -99,6 +104,7 @@ class SignUp extends Component {
                     name="password"
                     value={password}
                   />
+                  
                   {signUp ? (
                     <Input
                       label="Repeat Password"
@@ -107,13 +113,14 @@ class SignUp extends Component {
                       name="rePass"
                       value={rePass}
                     />
-                  ) : (
-                    ""
-                  )}
-                  <Button className="btn btn-success" clicked={this.handleSubmit}>
-                    {heading}
-                  </Button>
+                  ) : "" }
+                  
+                  <Button
+                    className="btn btn-success"
+                    clicked={this.handleSubmit}
+                  >{heading}</Button>
                 </form>
+
                 {toggleText}
               </Card>
             ) : (

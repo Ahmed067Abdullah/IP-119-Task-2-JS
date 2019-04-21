@@ -12,7 +12,9 @@ export const getRoom = rid => dispatch => {
       const roomData = snapshot.val();
       let payload = {};
       console.log("fetched", roomData);
+
       if (roomData) {
+        const { admin, admin_name, created_at, name } = roomData;
         const members = [];
         for (let key in roomData.members)
           members.push({ id: key, ...roomData.members[key] });
@@ -21,13 +23,8 @@ export const getRoom = rid => dispatch => {
         for (let key in roomData.messages)
           messages.push({ id: key, ...roomData.messages[key] });
 
-        const room = {
-          rid,
-          admin: roomData.admin,
-          created_at: roomData.created_at,
-          name: roomData.name
-        };
-
+        const room = { rid, admin, admin_name, created_at, name };
+        
         payload = { room, members, messages };
       }
 
@@ -89,7 +86,7 @@ export const createRoom = payload => async dispatch => {
 
   await database()
     .ref(`rooms/${ref}/members`)
-    .push({ name : uname, uid });
+    .push({ name: uname, uid });
 };
 
 export const addMember = payload => async dispatch => {
