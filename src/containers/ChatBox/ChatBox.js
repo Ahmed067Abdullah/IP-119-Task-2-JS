@@ -7,6 +7,7 @@ import * as actions from "../../store/actions/roomActions";
 import { setInvitedRoom, logout } from "../../store/actions/authActions";
 
 // components
+import Spinner from "../../components/UI Components/Spinner/Spinner";
 import Members from "../../components/Chat Room/Members/Members";
 import Messages from "../../components/Chat Room/Messages/Messages";
 import Rooms from "../../components/Chat Room/Rooms/Rooms";
@@ -104,9 +105,9 @@ class ChatBox extends Component {
 
   render() {
     const { messages, members, rooms, room } = this.props.room;
-    const { uid } = this.props.auth;
+    const { uid, loading } = this.props.auth;
     let url = "http://localhost:3000/chatbox/";
-    return (
+    return !loading ? (
       <div className={classes.container}>
         <Header
           name={room.name}
@@ -136,12 +137,15 @@ class ChatBox extends Component {
               />
               <input type="button" onClick={this.send} value="Send" />
             </form>
-
           </div>
           <div className={classes.rooms}>
             <Rooms rooms={rooms} setupRoom={this.setupRoom} />
           </div>
         </div>
+      </div>
+    ) : (
+      <div>
+        <Spinner />
       </div>
     );
   }

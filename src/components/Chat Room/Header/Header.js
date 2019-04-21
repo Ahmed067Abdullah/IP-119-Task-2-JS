@@ -18,7 +18,7 @@ const header = props => {
       </p>
 
       <CopyToClipboard onCopy={onCopy} text={path}>
-        <button className="btn">Get Invitation Link</button>
+        <button className="btn btn-info">Get Invitation Link</button>
       </CopyToClipboard>
       <Button className="btn btn-success" clicked={createRoom}>Create Room</Button>
       <Button className="btn btn-danger" clicked={logout}>Logout</Button>

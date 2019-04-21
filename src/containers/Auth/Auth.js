@@ -124,7 +124,7 @@ class SignUp extends Component {
                 {toggleText}
               </Card>
             ) : (
-              <div className="auth-spinner">
+              <div>
                 <Spinner />
               </div>
             )}
