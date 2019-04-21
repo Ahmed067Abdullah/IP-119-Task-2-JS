@@ -23,52 +23,6 @@ export const setSignedIn = user => dispatch => {
   loginSuccessful(dispatch, uid, name, status, type);
 };
 
-// export const signup = payload => dispatch => {
-//   const { name, email, password, history } = payload;
-//   const user = { email, name };
-
-//   dispatch(dispatcher(actionTypes.START_LOADING));
-//   auth()
-//     .createUserWithEmailAndPassword(email, password)
-//     .then(res => {
-//       const uid = res.user.uid;
-//       database()
-//         .ref(`users/${uid}`)
-//         .set(user)
-//         .then(() => {
-//           database()
-//             .ref(`rooms/${uid}`)
-//             .set({
-//               admin: uid,
-//               created_at: Date.now(),
-//               name: `${name}'s Default Room`
-//             })
-//             .then(() => {
-//               database()
-//                 .ref(`rooms/${uid}/members`)
-//                 .push({
-//                   name,
-//                   uid
-//                 })
-//                 .then(() => {
-//                   loginSuccessful(dispatch, uid, name, history);
-//                 });
-//             });
-//         });
-//     })
-//     .catch(error => {
-//       dispatch(dispatcher(actionTypes.STOP_LOADING));
-//       let errorMessage = "";
-//       if (error.code === "auth/email-already-in-use")
-//         errorMessage = "Account For This Email is Already Registered";
-//       else if (error.code === "auth/invalid-email")
-//         errorMessage = "Invalid Email";
-//       else errorMessage = error.message;
-//       console.log(errorMessage);
-//       dispatch(dispatcher(actionTypes.AUTH_ERROR, { error: errorMessage }));
-//     });
-// };
-
 export const signup = payload => dispatch => {
   const { name, email, password, history } = payload;
   const user = { email, name };

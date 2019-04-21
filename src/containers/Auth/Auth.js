@@ -8,6 +8,7 @@ import Input from "../../components/UI Components/Input/Input";
 
 import Card from "../..//hoc/Card";
 import Spinner from "../../components/UI Components/Spinner/Spinner";
+import classes from "./Auth.module.css";
 
 class SignUp extends Component {
   state = {
@@ -45,75 +46,82 @@ class SignUp extends Component {
     const { loading, error } = this.props.auth;
     let heading = "Sign In";
     let toggleText = (
-      <p>
-        New Member? <span onClick={this.toggleAuthType}> Sign Up</span>
+      <p className={classes.auth_toggle_para}>
+        <span>New Member? </span>
+        <span className={classes.auth_toggle} onClick={this.toggleAuthType}>
+          Sign Up
+        </span>
       </p>
     );
 
     if (signUp) {
       heading = "Sign Up";
       toggleText = (
-        <p>
-          Already Have an Account?{" "}
-          <span onClick={this.toggleAuthType}> Sign In</span>
+        <p className={classes.auth_toggle_para}>
+          <span>Already Have an Account? </span>
+          <span className={classes.auth_toggle} onClick={this.toggleAuthType}>
+            Sign In
+          </span>
         </p>
       );
     }
 
     return (
-      <div style={{ marginTop: 110 }}>
-        <h1 className="main-heading-signup">Welcome to ChatBox </h1>
-        <div className="signup-card-container">
-          {!loading ? (
-            <Card>
-              <h2 className="singin-heading">{heading}</h2>
-              <p className="Error">{error ? error : null}</p>
-              <form onSubmit={this.handleSubmit}>
-                <Input
-                  label="Email"
-                  changed={this.handleChange}
-                  name="email"
-                  value={email}
-                />
-                {signUp ? (
+      <div className={classes.container}>
+        <div className={classes.main}>
+          <h1 className={classes.main_heading}>Welcome to ChatBox </h1>
+          <div className="signup-card-container">
+            {!loading ? (
+              <Card>
+                <h2 className={classes.heading}>{heading}</h2>
+                <p className={classes.error}>{error ? error : null}</p>
+                <form onSubmit={this.handleSubmit}>
                   <Input
-                    label="Name"
+                    label="Email"
                     changed={this.handleChange}
-                    name="name"
-                    value={name}
+                    name="email"
+                    value={email}
                   />
-                ) : (
-                  ""
-                )}
-                <Input
-                  label="Password"
-                  type="password"
-                  changed={this.handleChange}
-                  name="password"
-                  value={password}
-                />
-                {signUp ? (
+                  {signUp ? (
+                    <Input
+                      label="Name"
+                      changed={this.handleChange}
+                      name="name"
+                      value={name}
+                    />
+                  ) : (
+                    ""
+                  )}
                   <Input
-                    label="Repeat Password"
+                    label="Password"
                     type="password"
                     changed={this.handleChange}
-                    name="rePass"
-                    value={rePass}
+                    name="password"
+                    value={password}
                   />
-                ) : (
-                  ""
-                )}
-                <Button className="auth-button" clicked={this.handleSubmit}>
-                  {heading}
-                </Button>
-              </form>
-              {toggleText}
-            </Card>
-          ) : (
-            <div className="auth-spinner">
-              <Spinner />
-            </div>
-          )}
+                  {signUp ? (
+                    <Input
+                      label="Repeat Password"
+                      type="password"
+                      changed={this.handleChange}
+                      name="rePass"
+                      value={rePass}
+                    />
+                  ) : (
+                    ""
+                  )}
+                  <Button className="btn btn-success" clicked={this.handleSubmit}>
+                    {heading}
+                  </Button>
+                </form>
+                {toggleText}
+              </Card>
+            ) : (
+              <div className="auth-spinner">
+                <Spinner />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );

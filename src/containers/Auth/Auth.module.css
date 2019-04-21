@@ -1,0 +1,40 @@
+.container{
+    display : flex;
+    justify-content: center;
+    align-items : center;
+    height: 100%;
+}
+
+.main{
+    margin-top : -5%;
+    width : 500px;
+    color :#457720;
+}
+
+.main_heading{
+    font-size: 48px;
+    margin-bottom :  20px;
+}
+
+.heading{
+    font-size: 32px;
+}
+
+.error{
+    color : red;
+    margin : 20px 0 5px;
+}
+
+.auth_toggle_para{
+    margin-top : 10px;
+}
+
+.auth_toggle{
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.auth_toggle:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}
