@@ -23,7 +23,6 @@ class ChatBox extends Component {
   }
 
   setupRoom = rid => {
-    console.log("here");
     const {
       getRoom,
       getRoomsList,
@@ -45,7 +44,10 @@ class ChatBox extends Component {
         getRoom(invited_to);
         setInvitedRoom("");
         history.replace(`/chatbox/${invited_to}`);
-      } else getRoom(rid);
+      } else {
+        getRoom(rid);
+        history.replace(`/chatbox/${rid}`);
+      }
     } else {
       alert("Please login to continue");
       setInvitedRoom(rid);
@@ -72,16 +74,34 @@ class ChatBox extends Component {
     this.setState({ message: "" });
   };
 
+  onRemoveMember = id => {
+    const { removeMember, room } = this.props;
+    removeMember({
+      rid: room.room.rid,
+      id
+    });
+  };
+
   onLogout = () => {
     const { history, onLogout } = this.props;
     onLogout(history);
   };
 
+  onCreateRoom = () => {
+    const name = prompt("Choose Name for the new room");
+    const { createRoom, auth } = this.props;
+    createRoom({
+      name,
+      uid : auth.uid,
+      uname : auth.name
+    })
+  }
+
   onCopy = () => {
     alert("Invitation link is copied to the clip board!");
   };
 
-  getTimeString = time => new Date(time).toString().slice(0, 24)
+  getTimeString = time => new Date(time).toString().slice(0, 24);
 
   render() {
     const { messages, members, rooms, room } = this.props.room;
@@ -91,13 +111,16 @@ class ChatBox extends Component {
       <div className={classes.container}>
         <div>
           <div>Room : {room.name}</div>{" "}
-          <div>
-            Created At : {this.getTimeString(room.created_at)}
-          </div>
+          <div>Created At : {this.getTimeString(room.created_at)}</div>
         </div>
         <div className={classes.main}>
           <div className={classes.members}>
-            <Members members={members} />
+            <Members
+              members={members}
+              admin={room.admin}
+              onRemoveMember={this.onRemoveMember}
+              canRemove={uid === room.admin}
+            />
           </div>
           <div className={classes.messages}>
             <Messages messages={messages} uid={uid} />
@@ -112,6 +135,7 @@ class ChatBox extends Component {
             <CopyToClipboard onCopy={this.onCopy} text={`${url}${room.rid}`}>
               <button>Get Invitation Link</button>
             </CopyToClipboard>
+            <Button clicked={this.onCreateRoom}>Create Room</Button>
             <Button clicked={this.onLogout}>Logout</Button>
           </div>
           <div className={classes.rooms}>
@@ -137,7 +161,9 @@ const mapDispatchToProps = dispatch => {
     sendMessage: text => dispatch(actions.sendMessage(text)),
     setInvitedRoom: link => dispatch(setInvitedRoom(link)),
     addMember: payload => dispatch(actions.addMember(payload)),
-    onLogout: history => dispatch(logout(history))
+    onLogout: history => dispatch(logout(history)),
+    removeMember: payload => dispatch(actions.removeMember(payload)),
+    createRoom : payload => dispatch(actions.createRoom(payload))
   };
 };
 

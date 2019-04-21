@@ -23,8 +23,8 @@ export const getRoom = rid => dispatch => {
 
         const room = {
           rid,
+          admin: roomData.admin,
           created_at: roomData.created_at,
-          invite_code: roomData.invite_code,
           name: roomData.name
         };
 
@@ -78,18 +78,18 @@ export const sendMessage = payload => dispatch => {
 
 export const createRoom = payload => async dispatch => {
   console.log("creating room");
-  const { name, uid } = payload;
-  await database()
+  const { name, uid, uname } = payload;
+  const ref = await database()
     .ref("/rooms")
     .push({
       admin: uid,
       created_at: Date.now(),
       name
-    });
+    }).key;
 
-  // await database()
-  //   .ref(`rooms/${uid}/members`)
-  //   .push({ name, uid });
+  await database()
+    .ref(`rooms/${ref}/members`)
+    .push({ name : uname, uid });
 };
 
 export const addMember = payload => async dispatch => {
@@ -121,4 +121,7 @@ export const addMember = payload => async dispatch => {
 
 export const removeMember = payload => dispatch => {
   console.log("removing", payload);
+  database()
+    .ref(`/rooms/${payload.rid}/members/${payload.id}`)
+    .remove();
 };
