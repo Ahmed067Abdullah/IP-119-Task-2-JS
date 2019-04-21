@@ -10,24 +10,26 @@ export const getRoom = rid => dispatch => {
     .ref(`/rooms/${rid}`)
     .on("value", snapshot => {
       const roomData = snapshot.val();
+      let payload = {};
       console.log("fetched", roomData);
+      if (roomData) {
+        const members = [];
+        for (let key in roomData.members)
+          members.push({ id: key, ...roomData.members[key] });
 
-      const members = [];
-      for (let key in roomData.members)
-        members.push({ id: key, ...roomData.members[key] });
+        const messages = [];
+        for (let key in roomData.messages)
+          messages.push({ id: key, ...roomData.messages[key] });
 
-      const messages = [];
-      for (let key in roomData.messages)
-        messages.push({ id: key, ...roomData.messages[key] });
+        const room = {
+          rid,
+          created_at: roomData.created_at,
+          invite_code: roomData.invite_code,
+          name: roomData.name
+        };
 
-      const room = {
-        rid,
-        created_at: roomData.created_at,
-        invite_code: roomData.invite_code,
-        name: roomData.name
-      };
-
-      const payload = { room, members, messages };
+        payload = { room, members, messages };
+      }
 
       dispatch(dispatcher(actionTypes.SET_ROOM, payload));
       dispatch(dispatcher(actionTypes.STOP_LOADING));
@@ -98,10 +100,12 @@ export const addMember = payload => async dispatch => {
     .once("value");
   const members = res.val().members;
   let newMem = true;
-  for (let id in members) {
-    if (members[id].uid === uid) {
-      newMem = false;
-      break;
+  if (members) {
+    for (let id in members) {
+      if (members[id].uid === uid) {
+        newMem = false;
+        break;
+      }
     }
   }
   if (newMem) {

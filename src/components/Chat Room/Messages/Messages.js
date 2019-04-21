@@ -2,9 +2,13 @@ import React from "react";
 import Message from "./Message/Message";
 
 const messages = props => {
-  const messages = props.messages.map(message => (
-    <Message key={message.id} message={message} />
-  ));
+  let messages = "No messages to show";
+
+  if (props.messages && props.messages.length > 0) {
+    messages = props.messages.map(message => (
+      <Message key={message.id} message={message} uid={props.uid}/>
+    ));
+  }
   return (
     <div>
       <h1>Messages</h1>

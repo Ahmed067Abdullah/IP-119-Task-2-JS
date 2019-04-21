@@ -15,7 +15,7 @@ class SignUp extends Component {
     password: "123456",
     rePass: "123456",
     name: "Ahmed",
-    signUp: true
+    signUp: false
   };
 
   toggleAuthType = () => {
@@ -31,7 +31,7 @@ class SignUp extends Component {
     });
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
     const { onSignUp, onSignIn, history } = this.props;
     const { email, password, name } = this.state;
@@ -41,14 +41,8 @@ class SignUp extends Component {
   };
 
   render() {
-    const {
-      email,
-      password,
-      rePass,
-      name,
-      signUp
-    } = this.state;
-    const {loading, error} = this.props.auth;
+    const { email, password, rePass, name, signUp } = this.state;
+    const { loading, error } = this.props.auth;
     let heading = "Sign In";
     let toggleText = (
       <p>
@@ -109,7 +103,9 @@ class SignUp extends Component {
                 ) : (
                   ""
                 )}
-                <Button className="auth-button" clicked={this.handleSubmit}>{heading}</Button>
+                <Button className="auth-button" clicked={this.handleSubmit}>
+                  {heading}
+                </Button>
               </form>
               {toggleText}
             </Card>
@@ -141,4 +137,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(SignUp);
-

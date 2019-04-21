@@ -5,7 +5,7 @@ const initialState = {
   name: "",
   loading: false,
   error: "",
-  invited_to: "ff1Cy3w7QnXCNlxNn9FTYb3sAjb2"
+  invited_to: ""
 };
 
 const reducer = (state = initialState, action) => {
