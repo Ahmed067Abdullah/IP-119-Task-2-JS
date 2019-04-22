@@ -11,6 +11,7 @@ const messageInput = props => {
           onChange={props.changed}
           name="msg"
           className={classes.input_field}
+          placeholder="Enter your message here..."
           autoComplete="off"
           autoFocus
         />

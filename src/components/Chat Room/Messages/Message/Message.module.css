@@ -6,6 +6,8 @@
 
 .own {
   margin-left: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .sender {
@@ -15,20 +17,33 @@
   margin: 1px 0 2px 6px;
 }
 
-.message_text {
+.text {
   color: white;
+  align-self: flex-end;
   max-width: 550px;
-  width: auto;
+  display: inline-block;
   background-color: #314f1a;
   min-height: 35px;
   border-radius: 10px;
   color: #dfffc1;
-  /* color : black; */
   word-wrap: break-word;
   padding: 5px 8px;
   margin: 0;
 }
 
-.own_msg{
-    background-color: #3d7d30;   
+.text:hover ~ .time{
+  display: block;
+}
+
+.time {
+  display: none;
+  align-self: flex-end;
+  color: grey;
+  font-size: 12px;
+  padding: 0;
+  margin: 1px 6px 2px 6px;
+}
+
+.own_msg {
+  background-color: #3d7d30;
 }

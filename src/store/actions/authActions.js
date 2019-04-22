@@ -28,21 +28,21 @@ const authError = (dispatch, msg, type) => {
 
 // actions
 export const setSignedIn = user => dispatch => {
-  const { uid, name, status, type } = user;
-  loginSuccessful(dispatch, uid, name, status, type);
+  const { uid, name, history } = user;
+  loginSuccessful(dispatch, uid, name, history);
 };
 
 export const signup = payload => dispatch => {
-  const { name, email, password,rePass, history } = payload;
+  const { name, email, password, rePass, history } = payload;
   const user = { email, name };
 
-  if(rePass !== password){
-    authError(dispatch, "Passwords don't match","errorSignUp");
+  if (rePass !== password) {
+    authError(dispatch, "Passwords don't match", "errorSignUp");
     return;
   }
 
-    if(!name){
-    authError(dispatch, "Name is required","errorSignUp");
+  if (!name) {
+    authError(dispatch, "Name is required", "errorSignUp");
     return;
   }
 
@@ -75,7 +75,7 @@ export const signup = payload => dispatch => {
       else if (error.code === "auth/invalid-email")
         errorMessage = "Invalid Email";
       else errorMessage = error.message;
-      authError(dispatch, errorMessage,"errorSignUp");
+      authError(dispatch, errorMessage, "errorSignUp");
     });
 };
 
@@ -104,7 +104,7 @@ export const signin = payload => dispatch => {
       else if (error.code === "auth/user-not-found")
         errorMessage = "User Doesn't Exist";
       else errorMessage = error.message;
-      authError(dispatch, errorMessage,"errorSignIn");
+      authError(dispatch, errorMessage, "errorSignIn");
     });
 };
 
