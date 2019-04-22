@@ -81,7 +81,8 @@ export const createRoom = payload => async dispatch => {
     .push({
       admin: uid,
       created_at: Date.now(),
-      name
+      name,
+      admin_name : uname
     }).key;
 
   await database()

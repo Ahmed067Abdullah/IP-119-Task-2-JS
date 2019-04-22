@@ -17,6 +17,15 @@ const loginFailed = dispatch => {
   console.log("error in sign in after authenticating");
 };
 
+const authError = (dispatch, msg, type) => {
+  dispatch(
+    dispatcher(actionTypes.AUTH_ERROR, {
+      errorMsg: msg,
+      errorType: type
+    })
+  );
+};
+
 // actions
 export const setSignedIn = user => dispatch => {
   const { uid, name, status, type } = user;
@@ -24,8 +33,18 @@ export const setSignedIn = user => dispatch => {
 };
 
 export const signup = payload => dispatch => {
-  const { name, email, password, history } = payload;
+  const { name, email, password,rePass, history } = payload;
   const user = { email, name };
+
+  if(rePass !== password){
+    authError(dispatch, "Passwords don't match","errorSignUp");
+    return;
+  }
+
+    if(!name){
+    authError(dispatch, "Name is required","errorSignUp");
+    return;
+  }
 
   dispatch(dispatcher(actionTypes.START_LOADING));
   auth()
@@ -39,6 +58,7 @@ export const signup = payload => dispatch => {
         .ref(`rooms/${uid}`)
         .set({
           admin: uid,
+          admin_name: name,
           created_at: Date.now(),
           name: `${name}'s Default Room`
         });
@@ -55,7 +75,7 @@ export const signup = payload => dispatch => {
       else if (error.code === "auth/invalid-email")
         errorMessage = "Invalid Email";
       else errorMessage = error.message;
-      dispatch(dispatcher(actionTypes.AUTH_ERROR, { error: errorMessage }));
+      authError(dispatch, errorMessage,"errorSignUp");
     });
 };
 
@@ -84,7 +104,7 @@ export const signin = payload => dispatch => {
       else if (error.code === "auth/user-not-found")
         errorMessage = "User Doesn't Exist";
       else errorMessage = error.message;
-      dispatch(dispatcher(actionTypes.AUTH_ERROR, { error: errorMessage }));
+      authError(dispatch, errorMessage,"errorSignIn");
     });
 };
 

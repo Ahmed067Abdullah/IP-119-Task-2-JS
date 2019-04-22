@@ -38,16 +38,23 @@ class SignUp extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const { onSignUp, onSignIn, history } = this.props;
-    const { email, password, name } = this.state;
-    const payload = { email, password, name, history };
+    const { email, password, name, rePass } = this.state;
+    const payload = {
+      email: email.trim(),
+      password: password.trim(),
+      rePass: rePass.trim(),
+      name: name.trim(),
+      history
+    };
     this.state.signUp ? onSignUp(payload) : onSignIn(payload);
   };
 
   render() {
     const { email, password, rePass, name, signUp } = this.state;
-    const { loading, error } = this.props.auth;
+    const { loading, errorSignIn, errorSignUp } = this.props.auth;
 
     // setting default values
+    let error = errorSignIn ? errorSignIn : "";
     let heading = "Sign In";
     let toggleText = (
       <p className={classes.auth_toggle_para}>
@@ -61,6 +68,7 @@ class SignUp extends Component {
     // changing default values if signing up
     if (signUp) {
       heading = "Sign Up";
+      error = errorSignUp;
       toggleText = (
         <p className={classes.auth_toggle_para}>
           <span>Already Have an Account? </span>
@@ -79,7 +87,7 @@ class SignUp extends Component {
             {!loading ? (
               <Card>
                 <h2 className={classes.heading}>{heading}</h2>
-                <p className={classes.error}>{error ? error : null}</p>
+                <p className={classes.error}>{error}</p>
                 <form onSubmit={this.handleSubmit}>
                   <Input
                     label="Email"
@@ -87,7 +95,7 @@ class SignUp extends Component {
                     name="email"
                     value={email}
                   />
-                  
+
                   {signUp ? (
                     <Input
                       label="Name"
@@ -95,8 +103,10 @@ class SignUp extends Component {
                       name="name"
                       value={name}
                     />
-                  ) : ""}
-                  
+                  ) : (
+                    ""
+                  )}
+
                   <Input
                     label="Password"
                     type="password"
@@ -104,7 +114,7 @@ class SignUp extends Component {
                     name="password"
                     value={password}
                   />
-                  
+
                   {signUp ? (
                     <Input
                       label="Repeat Password"
@@ -113,12 +123,16 @@ class SignUp extends Component {
                       name="rePass"
                       value={rePass}
                     />
-                  ) : "" }
-                  
+                  ) : (
+                    ""
+                  )}
+
                   <Button
                     className="btn btn-success"
                     clicked={this.handleSubmit}
-                  >{heading}</Button>
+                  >
+                    {heading}
+                  </Button>
                 </form>
 
                 {toggleText}

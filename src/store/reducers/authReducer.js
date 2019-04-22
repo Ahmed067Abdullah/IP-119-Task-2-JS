@@ -4,7 +4,8 @@ const initialState = {
   uid: "",
   name: "",
   loading: false,
-  error: "",
+  errorSignIn: "",
+  errorSignUp: "",
   invited_to: ""
 };
 
@@ -26,13 +27,16 @@ const reducer = (state = initialState, action) => {
         ...state,
         uid,
         name,
-        error: "",
+        errorSignIn: "",
+        errorSignUp: "",
         loading: false
       };
     case actionTypes.AUTH_ERROR:
+      const { errorMsg, errorType } = action.payload;
+      console.log(action.payload);
       return {
         ...state,
-        error: action.payload.error
+        [errorType]: errorMsg
       };
     case actionTypes.SET_INVITED_ROOM:
       return {
