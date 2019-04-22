@@ -13,6 +13,10 @@
     padding : 5px 3px;
 }
 
+.own{
+    background-color: #3d7d30;   
+}
+
 .remove{
     color : red;
     margin-left : 10px;

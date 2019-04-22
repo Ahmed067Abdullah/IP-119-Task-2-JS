@@ -3,9 +3,10 @@ import classes from "./Member.module.css";
 
 const member = props => {
   const { name, uid, id } = props.member;
-
+  const own = uid === props.uid ? classes.own : "";
+  
   return (
-    <div className={classes.member}>
+    <div className={`${classes.member} ${own}`}>
       {name}
       {uid === props.admin || !props.canRemove ? (
         ""

@@ -70,7 +70,7 @@ export const sendMessage = payload => dispatch => {
       posted_by,
       posted_at: Date.now()
     });
-  console.log("sent");
+  console.log("sent",payload);
 };
 
 export const createRoom = payload => async dispatch => {

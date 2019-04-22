@@ -1,5 +1,6 @@
 import React from "react";
-import Message from "./Message/Message";
+import Message from "./Message/Message"; 
+import classes from './Messages.module.css';
 
 const messages = props => {
   let messages = "No messages to show";
@@ -9,7 +10,7 @@ const messages = props => {
       <Message key={message.id} message={message} uid={props.uid} />
     ));
   }
-  return <div>{messages}</div>;
+  return <div className={classes.messages_container}  ref={el => props.setEl(el)} >{messages}</div>;
 };
 
 export default messages;

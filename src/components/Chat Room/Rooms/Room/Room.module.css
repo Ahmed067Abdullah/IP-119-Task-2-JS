@@ -16,3 +16,7 @@
 .room:hover {
   cursor: pointer;
 }
+
+.current_room{
+  background-color: #3d7d30;   
+}

@@ -7,20 +7,38 @@ import * as actions from "../../store/actions/roomActions";
 import { setInvitedRoom, logout } from "../../store/actions/authActions";
 
 // components
+import Header from "../../components/Chat Room/Header/Header";
 import Spinner from "../../components/UI Components/Spinner/Spinner";
 import Members from "../../components/Chat Room/Members/Members";
 import Messages from "../../components/Chat Room/Messages/Messages";
 import Rooms from "../../components/Chat Room/Rooms/Rooms";
-import Header from "../../components/Chat Room/Header/Header";
+import MessageInput from "../../components/Chat Room/MessageInput/MessageInput";
+
+// base url
+import url from "../../config/baseURL";
 
 class ChatBox extends Component {
   state = {
-    message: ""
+    msg: ""
   };
 
   componentDidMount() {
+    this.scrollToBottom();
     this.setupRoom(this.props.match.params.id);
   }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom = () => {
+    if (this.el) {
+      const scrollHeight = this.el.scrollHeight;
+      const height = this.el.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      this.el.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    }
+  };
 
   setupRoom = rid => {
     const {
@@ -64,14 +82,18 @@ class ChatBox extends Component {
 
   send = e => {
     e.preventDefault();
-    const { sendMessage, room, auth } = this.props;
-    sendMessage({
-      text: this.state.message,
-      room: room.room.rid,
-      uid: auth.uid,
-      posted_by: auth.name
-    });
-    this.setState({ message: "" });
+    const text = this.state.msg.trim();
+    if (text) {
+      const { sendMessage, room, auth } = this.props;
+      console.log("sending", this.state);
+      sendMessage({
+        text,
+        room: room.room.rid,
+        uid: auth.uid,
+        posted_by: auth.name
+      });
+      this.setState({ msg: "" });
+    }
   };
 
   onRemoveMember = id => {
@@ -88,13 +110,15 @@ class ChatBox extends Component {
   };
 
   onCreateRoom = () => {
-    const name = prompt("Choose Name for the new room");
-    const { createRoom, auth } = this.props;
-    createRoom({
-      name,
-      uid: auth.uid,
-      uname: auth.name
-    });
+    const name = (prompt("Choose Name for the new room")).trim();
+    if(name){
+      const { createRoom, auth } = this.props;
+      createRoom({
+        name,
+        uid: auth.uid,
+        uname: auth.name
+      });
+    }
   };
 
   onCopy = () => {
@@ -103,10 +127,12 @@ class ChatBox extends Component {
 
   getTimeString = time => new Date(time).toString().slice(0, 24);
 
+  setEl = el => (this.el = el);
+
   render() {
     const { messages, members, rooms, room } = this.props.room;
     const { uid, loading } = this.props.auth;
-    let url = "http://localhost:3000/chatbox/";
+    const { msg } = this.state;
     return !loading ? (
       <div className={classes.container}>
         <Header
@@ -125,21 +151,19 @@ class ChatBox extends Component {
               admin={room.admin}
               onRemoveMember={this.onRemoveMember}
               canRemove={uid === room.admin}
+              uid={uid}
             />
           </div>
           <div className={classes.messages}>
-            <Messages messages={messages} uid={uid} />
-            <form onSubmit={this.send}>
-              <input
-                value={this.state.message}
-                onChange={this.handleChange}
-                name="message"
-              />
-              <input type="button" onClick={this.send} value="Send" />
-            </form>
+            <Messages messages={messages} uid={uid} setEl={this.setEl} />
+            <MessageInput
+              send={this.send}
+              msg={msg}
+              changed={this.handleChange}
+            />
           </div>
           <div className={classes.rooms}>
-            <Rooms rooms={rooms} setupRoom={this.setupRoom} />
+            <Rooms rooms={rooms} setupRoom={this.setupRoom} cur={room.rid} />
           </div>
         </div>
       </div>

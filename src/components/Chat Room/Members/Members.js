@@ -13,12 +13,13 @@ const members = props => {
         admin={props.admin}
         onRemoveMember={props.onRemoveMember}
         canRemove={props.canRemove}
+        uid={props.uid}
       />
     ));
   }
 
   return (
-    <div>
+    <div className={classes.members_container}>
       <h1 className={classes.heading}>Members</h1>
       {members}
     </div>

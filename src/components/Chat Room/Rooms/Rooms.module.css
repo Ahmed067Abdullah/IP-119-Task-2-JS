@@ -1,3 +1,8 @@
+.rooms_container{
+    overflow-y: scroll;
+    height: 100%;
+}
+
 .heading{
     margin-top : 10px;
     color : #314f1a;
