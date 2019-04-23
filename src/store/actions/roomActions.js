@@ -2,7 +2,7 @@ import dispatcher from "../dispater";
 import { database } from "firebase";
 import * as actionTypes from "./actionTypes";
 
-export const getRoom = rid => (dispatch, getState) => {
+export const getRoom = (rid, history) => (dispatch, getState) => {
   dispatch(dispatcher(actionTypes.START_LOADING));
   console.log("fetching for", rid);
   let oldMembers = [];
@@ -34,11 +34,10 @@ export const getRoom = rid => (dispatch, getState) => {
         if (flag && oldMembers.length < members.length) {
           for (let i = 0; i < members.length; i++) {
             const member = members[i];
+            console.log(member.uid, loggedInUser);
             if (
-              !oldMembers.find(
-                oldMember =>
-                  oldMember.uid === member.uid && member.uid !== loggedInUser
-              )
+              !oldMembers.find(oldMember => oldMember.uid === member.uid) &&
+              member.uid !== loggedInUser
             ) {
               alert(`${member.name} just joined the room`);
             }
@@ -47,6 +46,9 @@ export const getRoom = rid => (dispatch, getState) => {
 
         oldMembers = [...members];
         flag = true;
+      } else {
+        alert("Room Doesn't exist");
+        // history.replace(`chatbox/${loggedInUser}`);
       }
       console.log("after::Members:", oldMembers);
       dispatch(dispatcher(actionTypes.SET_ROOM, payload));
@@ -96,7 +98,7 @@ export const sendMessage = payload => dispatch => {
 
 export const createRoom = payload => async dispatch => {
   console.log("creating room");
-  const { name, uid, uname } = payload;
+  const { name, uid, uname, history, setupRoom } = payload;
   const ref = await database()
     .ref("/rooms")
     .push({
@@ -109,10 +111,12 @@ export const createRoom = payload => async dispatch => {
   await database()
     .ref(`rooms/${ref}/members`)
     .push({ name: uname, uid });
+
+  setupRoom(ref);
+  history.replace(`chatbox/${ref}`);
 };
 
 export const addMember = payload => async dispatch => {
-  // const {rid} = payload;
   const { name, uid, rid } = payload;
   const res = await database()
     .ref(`rooms/${rid}`)

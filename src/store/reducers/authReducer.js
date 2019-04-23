@@ -41,7 +41,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SET_INVITED_ROOM:
       return {
         ...state,
-        invited_to: action.invited_to
+        invited_to: action.payload
       };
     case actionTypes.LOGOUT:
       return initialState;

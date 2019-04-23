@@ -6,6 +6,7 @@ import ChatRoom from "./containers/ChatBox/ChatBox";
 const getRoutes = uid => {
   let routes = (
     <Switch>
+      <Route path="/auth/:id" exact component={Auth} />
       <Route path="/auth" exact component={Auth} />
       <Redirect to="/auth" />
     </Switch>

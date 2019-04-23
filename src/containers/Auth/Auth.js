@@ -37,14 +37,15 @@ class SignUp extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { onSignUp, onSignIn, history } = this.props;
+    const { onSignUp, onSignIn, history, match } = this.props;
     const { email, password, name, rePass } = this.state;
     const payload = {
       email: email.trim(),
       password: password.trim(),
       rePass: rePass.trim(),
       name: name.trim(),
-      history
+      history,
+      match
     };
     this.state.signUp ? onSignUp(payload) : onSignIn(payload);
   };

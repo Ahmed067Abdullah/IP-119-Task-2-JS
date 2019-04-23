@@ -3,12 +3,16 @@ import * as actionTypes from "./actionTypes";
 import dispatcher from "../dispater";
 
 // helper functions
-const loginSuccessful = (dispatch, uid, name, history) => {
+const loginSuccessful = (dispatch, uid, name, history, match) => {
   const user = { uid, name };
   localStorage.setItem("chat-box", JSON.stringify(user));
+  if (match && match.params.id) {
+    dispatch(dispatcher(actionTypes.SET_INVITED_ROOM, match.params.id));
+    history.replace(`/chatbox/${match.params.id}`);
+  }
+  else if (history) history.replace(`/chatbox/${uid}`);
   dispatch(dispatcher(actionTypes.AUTH_SUCCESSFUL, user));
   console.log("login successful", user);
-  if (history) history.replace(`/chatbox/${uid}`);
 };
 
 const loginFailed = dispatch => {
@@ -27,13 +31,13 @@ const authError = (dispatch, msg, type) => {
 
 // actions
 export const setSignedIn = user => dispatch => {
-  console.log("Login successful")
+  console.log("Login successful");
   const { uid, name } = user;
   loginSuccessful(dispatch, uid, name);
 };
 
 export const signup = payload => dispatch => {
-  const { name, email, password, rePass, history } = payload;
+  const { name, email, password, rePass, history, match } = payload;
   const user = { email, name };
 
   if (rePass !== password) {
@@ -65,7 +69,7 @@ export const signup = payload => dispatch => {
       await database()
         .ref(`rooms/${uid}/members`)
         .push({ name, uid });
-      loginSuccessful(dispatch, uid, name, history);
+      loginSuccessful(dispatch, uid, name, history, match);
     })
     .catch(error => {
       dispatch(dispatcher(actionTypes.STOP_LOADING));
@@ -80,7 +84,7 @@ export const signup = payload => dispatch => {
 };
 
 export const signin = payload => dispatch => {
-  const { email, password, history } = payload;
+  const { email, password, history, match } = payload;
   dispatch(dispatcher(actionTypes.START_LOADING));
   auth()
     .signInWithEmailAndPassword(email, password)
@@ -91,7 +95,7 @@ export const signin = payload => dispatch => {
         .once("value")
         .then(res => {
           if (res.val())
-            loginSuccessful(dispatch, uid, res.val().name, history);
+            loginSuccessful(dispatch, uid, res.val().name, history, match);
         })
         .catch(err => {
           loginFailed(dispatch);
@@ -111,7 +115,7 @@ export const signin = payload => dispatch => {
 export const setInvitedRoom = invited_to => {
   return {
     type: actionTypes.SET_INVITED_ROOM,
-    invited_to
+    payload: invited_to
   };
 };
 
