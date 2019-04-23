@@ -8,5 +8,6 @@ export const STOP_LOADING = 'STOP_LOADING';
 
 export const SET_INVITED_ROOM = 'SET_INVITED_ROOM';
 export const SET_ROOM = "SET_ROOM";
+export const SET_MESSAGES = "SET_MESSAGES";
 export const SET_ROOMS_LIST = "SET_ROOMS_LIST";
 

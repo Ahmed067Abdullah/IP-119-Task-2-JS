@@ -4,7 +4,7 @@ const initialState = {
   rooms: [],
   members: [],
   messages: [],
-  room : {}
+  room: {}
 };
 
 const reducer = (state = initialState, action) => {
@@ -12,7 +12,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SET_ROOM:
       return {
         ...state,
-        room : {...action.payload.room},
+        room: { ...action.payload.room },
         members: [...action.payload.members],
         messages: [...action.payload.messages]
       };
@@ -20,6 +20,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         rooms: [...action.payload]
+      };
+    case actionTypes.SET_MESSAGES:
+      return {
+        ...state,
+        messages: [...action.payload]
       };
     case actionTypes.LOGOUT:
       return initialState;

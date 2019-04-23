@@ -25,7 +25,7 @@ export const getRoom = rid => (dispatch, getState) => {
 
         const messages = [];
         for (let key in roomData.messages)
-          messages.push({ id: key, ...roomData.messages[key] });
+          messages.push({ id: key, ...roomData.messages[key], clicked: false });
 
         const room = { rid, admin, admin_name, created_at, name };
 
@@ -143,4 +143,10 @@ export const removeMember = payload => dispatch => {
   database()
     .ref(`/rooms/${payload.rid}/members/${payload.id}`)
     .remove();
+};
+
+export const messageClicked = (id, msgs) => dispatch => {
+  const index = msgs.findIndex(msg => msg.id === id);
+  msgs[index].clicked = !msgs[index].clicked;
+  dispatch(dispatcher(actionTypes.SET_MESSAGES, msgs));
 };

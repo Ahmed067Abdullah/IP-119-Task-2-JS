@@ -102,6 +102,11 @@ class ChatBox extends Component {
     }
   };
 
+  messageClicked = id => {
+    const { messageClicked, room } = this.props;
+    messageClicked(id, [...room.messages]);
+  };
+
   onRemoveMember = id => {
     const { removeMember, room } = this.props;
     removeMember({
@@ -161,7 +166,12 @@ class ChatBox extends Component {
             />
           </div>
           <div className={classes.messages}>
-            <Messages messages={messages} uid={uid} setEl={this.setEl} />
+            <Messages
+              messages={messages}
+              uid={uid}
+              setEl={this.setEl}
+              messageClicked={this.messageClicked}
+            />
             <MessageInput
               send={this.send}
               msg={msg}
@@ -197,7 +207,8 @@ const mapDispatchToProps = dispatch => {
     addMember: payload => dispatch(actions.addMember(payload)),
     onLogout: history => dispatch(logout(history)),
     removeMember: payload => dispatch(actions.removeMember(payload)),
-    createRoom: payload => dispatch(actions.createRoom(payload))
+    createRoom: payload => dispatch(actions.createRoom(payload)),
+    messageClicked: (id, msgs) => dispatch(actions.messageClicked(id, msgs))
   };
 };
 
