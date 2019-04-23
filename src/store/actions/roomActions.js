@@ -2,9 +2,11 @@ import dispatcher from "../dispater";
 import { database } from "firebase";
 import * as actionTypes from "./actionTypes";
 
+const isMember = (uid, members) => members.find(member => member.uid === uid);
+
 export const getRoom = (rid, history) => (dispatch, getState) => {
   dispatch(dispatcher(actionTypes.START_LOADING));
-  console.log("fetching for", rid);
+  // console.log("fetching for", rid);
   let oldMembers = [];
   let flag = false;
   const loggedInUser = getState().auth.uid;
@@ -12,16 +14,25 @@ export const getRoom = (rid, history) => (dispatch, getState) => {
     .ref(`/rooms/${rid}`)
     .on("value", snapshot => {
       oldMembers = getState().room.members;
-      console.log("before::Members:", oldMembers);
       const roomData = snapshot.val();
       let payload = {};
-      console.log("fetched", roomData);
+      // console.log("fetched", roomData);
 
       if (roomData) {
         const { admin, admin_name, created_at, name } = roomData;
+
         const members = [];
         for (let key in roomData.members)
           members.push({ id: key, ...roomData.members[key] });
+
+        if (
+          !isMember(loggedInUser, members) &&
+          isMember(loggedInUser, oldMembers)
+        ) {
+          alert(`You're removed for the room: ${name}`);
+          moveToDefaultRoom(loggedInUser, history, dispatch);
+          return;
+        }
 
         const messages = [];
         for (let key in roomData.messages)
@@ -34,7 +45,6 @@ export const getRoom = (rid, history) => (dispatch, getState) => {
         if (flag && oldMembers.length < members.length) {
           for (let i = 0; i < members.length; i++) {
             const member = members[i];
-            console.log(member.uid, loggedInUser);
             if (
               !oldMembers.find(oldMember => oldMember.uid === member.uid) &&
               member.uid !== loggedInUser
@@ -47,8 +57,9 @@ export const getRoom = (rid, history) => (dispatch, getState) => {
         oldMembers = [...members];
         flag = true;
       } else {
-        alert("Room Doesn't exist");
-        // history.replace(`chatbox/${loggedInUser}`);
+        // alert("Room Doesn't exist");
+        console.log("Removed");
+        moveToDefaultRoom(loggedInUser, history, dispatch);
       }
       console.log("after::Members:", oldMembers);
       dispatch(dispatcher(actionTypes.SET_ROOM, payload));
@@ -56,15 +67,22 @@ export const getRoom = (rid, history) => (dispatch, getState) => {
     });
 };
 
+const moveToDefaultRoom = (loggedInUser, history, dispatch) => {
+  console.log(loggedInUser);
+  history.replace(`/chatbox/${loggedInUser}`);
+  dispatch(getRoom(loggedInUser, history));
+  localStorage.setItem("chat-box-current-room", loggedInUser);
+};
+
 export const getRoomsList = uid => dispatch => {
   dispatch(dispatcher(actionTypes.START_LOADING));
-  console.log("fetching rooms for", uid);
+  // console.log("fetching rooms for", uid);
 
   database()
     .ref("/rooms/")
     .on("value", snapshot => {
       const roomsObj = snapshot.val();
-      console.log("fetched", roomsObj);
+      // console.log("fetched", roomsObj);
 
       const rooms = [];
       for (let key in roomsObj) {

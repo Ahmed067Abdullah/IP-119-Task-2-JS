@@ -25,7 +25,6 @@ class ChatBox extends Component {
   componentDidMount() {
     this.scrollToBottom();
     this.setupRoom(this.props.auth.invited_to);
-    console.log(this.props.auth);
   }
 
   componentDidUpdate() {
@@ -53,9 +52,9 @@ class ChatBox extends Component {
 
     if (auth.uid) {
       const room = localStorage.getItem("chat-box-current-room");
-      console.log(rid);
+      console.log("before::",rid);
       rid = rid ? rid : room ? room : auth.uid;
-      console.log(rid);
+      console.log("after::",rid);
       getRoomsList(auth.uid);
       if (auth.invited_to) {
         const { invited_to, name, uid } = auth;
@@ -146,7 +145,6 @@ class ChatBox extends Component {
   setEl = el => (this.el = el);
 
   render() {
-    console.log(this.props);
     const { messages, members, rooms, room } = this.props.room;
     const { uid, loading } = this.props.auth;
     const { msg } = this.state;
