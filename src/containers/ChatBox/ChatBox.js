@@ -51,6 +51,8 @@ class ChatBox extends Component {
     } = this.props;
 
     if (auth.uid) {
+      const room = localStorage.getItem("chat-box-current-room");
+      rid = rid ? rid : room ? room : auth.uid;
       getRoomsList(auth.uid);
       if (auth.invited_to) {
         const { invited_to, name, uid } = auth;
@@ -59,18 +61,22 @@ class ChatBox extends Component {
           name,
           uid
         });
-        getRoom(invited_to);
         setInvitedRoom("");
-        history.replace(`/chatbox/${invited_to}`);
+        this.getRoom(getRoom, invited_to, history);
       } else {
-        getRoom(rid);
-        history.replace(`/chatbox/${rid}`);
+        this.getRoom(getRoom, rid, history);
       }
     } else {
       alert("Please login to continue");
       setInvitedRoom(rid);
       history.replace("/auth");
     }
+  };
+
+  getRoom = (getRoom, rid, history) => {
+    getRoom(rid);
+    history.replace(`/chatbox/${rid}`);
+    localStorage.setItem("chat-box-current-room", rid);
   };
 
   handleChange = event => {
@@ -110,8 +116,8 @@ class ChatBox extends Component {
   };
 
   onCreateRoom = () => {
-    const name = (prompt("Choose Name for the new room")).trim();
-    if(name){
+    const name = prompt("Choose Name for the new room").trim();
+    if (name) {
       const { createRoom, auth } = this.props;
       createRoom({
         name,

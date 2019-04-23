@@ -2,13 +2,17 @@ import dispatcher from "../dispater";
 import { database } from "firebase";
 import * as actionTypes from "./actionTypes";
 
-export const getRoom = rid => dispatch => {
+export const getRoom = rid => (dispatch, getState) => {
   dispatch(dispatcher(actionTypes.START_LOADING));
   console.log("fetching for", rid);
-
+  let oldMembers = [];
+  let flag = false;
+  const loggedInUser = getState().auth.uid;
   database()
     .ref(`/rooms/${rid}`)
     .on("value", snapshot => {
+      oldMembers = getState().room.members;
+      console.log("before::Members:", oldMembers);
       const roomData = snapshot.val();
       let payload = {};
       console.log("fetched", roomData);
@@ -24,10 +28,27 @@ export const getRoom = rid => dispatch => {
           messages.push({ id: key, ...roomData.messages[key] });
 
         const room = { rid, admin, admin_name, created_at, name };
-        
-        payload = { room, members, messages };
-      }
 
+        payload = { room, members, messages };
+
+        if (flag && oldMembers.length < members.length) {
+          for (let i = 0; i < members.length; i++) {
+            const member = members[i];
+            if (
+              !oldMembers.find(
+                oldMember =>
+                  oldMember.uid === member.uid && member.uid !== loggedInUser
+              )
+            ) {
+              alert(`${member.name} just joined the room`);
+            }
+          }
+        }
+
+        oldMembers = [...members];
+        flag = true;
+      }
+      console.log("after::Members:", oldMembers);
       dispatch(dispatcher(actionTypes.SET_ROOM, payload));
       dispatch(dispatcher(actionTypes.STOP_LOADING));
     });
@@ -70,7 +91,7 @@ export const sendMessage = payload => dispatch => {
       posted_by,
       posted_at: Date.now()
     });
-  console.log("sent",payload);
+  console.log("sent", payload);
 };
 
 export const createRoom = payload => async dispatch => {
@@ -82,7 +103,7 @@ export const createRoom = payload => async dispatch => {
       admin: uid,
       created_at: Date.now(),
       name,
-      admin_name : uname
+      admin_name: uname
     }).key;
 
   await database()

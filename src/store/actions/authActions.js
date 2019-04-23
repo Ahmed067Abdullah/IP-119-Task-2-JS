@@ -8,8 +8,7 @@ const loginSuccessful = (dispatch, uid, name, history) => {
   localStorage.setItem("chat-box", JSON.stringify(user));
   dispatch(dispatcher(actionTypes.AUTH_SUCCESSFUL, user));
   console.log("login successful", user);
-  history.replace(`/chatbox/${uid}`);
-  // history.replace(`/chatbox/ff1Cy3w7QnXCNlxNn9FTYb3sAjb2`);
+  if (history) history.replace(`/chatbox/${uid}`);
 };
 
 const loginFailed = dispatch => {
@@ -28,8 +27,9 @@ const authError = (dispatch, msg, type) => {
 
 // actions
 export const setSignedIn = user => dispatch => {
-  const { uid, name, history } = user;
-  loginSuccessful(dispatch, uid, name, history);
+  console.log("Login successful")
+  const { uid, name } = user;
+  loginSuccessful(dispatch, uid, name);
 };
 
 export const signup = payload => dispatch => {
@@ -118,5 +118,6 @@ export const setInvitedRoom = invited_to => {
 export const logout = history => dispatch => {
   dispatch(dispatcher(actionTypes.LOGOUT));
   localStorage.removeItem("chat-box");
+  localStorage.removeItem("chat-box-current-room");
   history.replace("/auth");
 };
