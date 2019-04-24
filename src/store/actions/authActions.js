@@ -120,12 +120,13 @@ export const setInvitedRoom = invited_to => {
 };
 
 export const logout = (history, uid) => async dispatch => {
-  dispatch(dispatcher(actionTypes.LOGOUT));
   let updates = {};
   updates[`/users/${uid}/online`] = false;
   await database()
-    .ref()
-    .update(updates);
+  .ref()
+  .update(updates);
+  
+  dispatch(dispatcher(actionTypes.LOGOUT));
   localStorage.removeItem("chat-box");
   localStorage.removeItem("chat-box-current-room");
   history.replace("/auth");

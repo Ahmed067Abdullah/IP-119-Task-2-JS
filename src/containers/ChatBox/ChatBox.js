@@ -110,7 +110,7 @@ class ChatBox extends Component {
   };
 
   onRemoveMember = id => {
-    const { removeMember, room } = this.props;
+    const { removeMember, room , auth} = this.props;
     removeMember({
       rid: room.room.rid,
       id

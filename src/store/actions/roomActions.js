@@ -7,100 +7,111 @@ const isMember = (uid, members) => members.find(member => member.uid === uid);
 export const getRoom = (rid, history) => (dispatch, getState) => {
   // start loading
   dispatch(dispatcher(actionTypes.START_LOADING));
-
+  dispatch(dispatcher(actionTypes.SET_MEMBERS, []));
   // console.log("fetching for", rid);
 
   let oldMembers = [];
-  let flag = false;
   const loggedInUser = getState().auth.uid;
 
-  // putting listener on the users node for online users
+  // set current room for the loggged in user
+  let updates = {};
+  updates[`/users/${loggedInUser}/current_room`] = rid;
   database()
-    .ref(`/users`)
-    .orderByChild("online")
-    .equalTo(true)
-    .on("value", async onlineUsers => {
-      // all online users
-      onlineUsers = onlineUsers.val();
-      console.log(onlineUsers);
+    .ref()
+    .update(updates)
+    .then(() => {
+      // putting listener on the users node for online users
+      database()
+        .ref(`/users`)
+        .orderByChild("online")
+        .equalTo(true)
+        .on("value", async onlineUsers => {
+          // current members
+          oldMembers = getState().room.members;
 
-      // all members of that specific room
-      let allMembers = await database()
-        .ref(`/rooms/${rid}/members`)
-        .once("value");
-      console.log(allMembers);
-      allMembers = allMembers.val();
+          // all online users
+          onlineUsers = onlineUsers.val();
+          console.log("all online", onlineUsers);
 
-      // if users exist in users node AND in that room
-      if (allMembers && onlineUsers) {
-        const members = [];
-        for (let key in allMembers) {
-          for (let id in onlineUsers) {
-            if (id === allMembers[key].uid) {
-              members.push({ id: key, uid: id, name: onlineUsers[id].name });
-              break;
+          // push online users with current room id in the array
+          const members = [];
+          if (onlineUsers) {
+            for (let key in onlineUsers) {
+              if (onlineUsers[key].current_room === rid) {
+                members.push({
+                  id: key,
+                  uid: key,
+                  name: onlineUsers[key].name
+                });
+              }
             }
-          }
-        }
-        console.log("online mem:", members);
+            console.log("online in room: ", rid, members);
 
-        if (
-          !isMember(loggedInUser, members) &&
-          isMember(loggedInUser, oldMembers)
-        ) {
-          alert(`You're not the a member of room: ${loggedInUser} anymore`);
-          moveToDefaultRoom(loggedInUser, history, dispatch);
-          return;
-        }
+            // if (
+            //   !isMember(loggedInUser, members) &&
+            //   isMember(loggedInUser, oldMembers)
+            // ) {
+            //   alert(`You're not the a member of room: ${loggedInUser} anymore`);
+            //   moveToDefaultRoom(loggedInUser, history, dispatch);
+            //   return;
+            // }
 
-        if (flag && oldMembers.length < members.length) {
-          for (let i = 0; i < members.length; i++) {
-            const member = members[i];
+            dispatch(dispatcher(actionTypes.SET_MEMBERS, members));
+
             if (
-              !isMember(member.uid, oldMembers) &
-              (member.uid !== loggedInUser)
+              oldMembers.length < members.length &&
+              oldMembers.length !== 0 &&
+              isMember(loggedInUser, members)
             ) {
-              alert(`${member.name} just joined the room`);
+              for (let i = 0; i < members.length; i++) {
+                const member = members[i];
+                if (
+                  !isMember(member.uid, oldMembers) &
+                  (member.uid !== loggedInUser)
+                ) {
+                  alert(`${member.name} just joined the room`);
+                }
+              }
             }
+
+            if (!isMember(loggedInUser, members)) {
+              console.log("Removed");
+              moveToDefaultRoom(loggedInUser, history, dispatch);
+            }
+            oldMembers = [...members];
           }
-        }
-        console.log("asd");
-        dispatch(dispatcher(actionTypes.SET_MEMBERS, members));
-        oldMembers = [...members];
-        flag = true;
-      }
-    });
+        });
 
-  database()
-    .ref(`/rooms/${rid}`)
-    .on("value", snapshot => {
-      oldMembers = getState().room.members;
-      const roomData = snapshot.val();
-      let payload = {};
-      console.log("fetched", roomData);
+      database()
+        .ref(`/rooms/${rid}`)
+        .on("value", snapshot => {
+          const roomData = snapshot.val();
+          let payload = {};
+          console.log("fetched", roomData);
 
-      if (roomData) {
-        const { admin, admin_name, created_at, name } = roomData;
+          if (roomData) {
+            const { admin, admin_name, created_at, name } = roomData;
 
-        const messages = [];
-        for (let key in roomData.messages)
-          messages.push({
-            id: key,
-            ...roomData.messages[key],
-            clicked: false
-          });
+            const messages = [];
+            for (let key in roomData.messages)
+              messages.push({
+                id: key,
+                ...roomData.messages[key],
+                clicked: false
+              });
 
-        const room = { rid, admin, admin_name, created_at, name };
+            const room = { rid, admin, admin_name, created_at, name };
 
-        payload = { room, messages };
-      } else {
-        // alert("Room Doesn't exist");
-        console.log("Removed");
-        moveToDefaultRoom(loggedInUser, history, dispatch);
-      }
-      console.log("after::Members:", oldMembers);
-      dispatch(dispatcher(actionTypes.SET_ROOM, payload));
-      dispatch(dispatcher(actionTypes.STOP_LOADING));
+            payload = { room, messages };
+          } else {
+            // alert("Room Doesn't exist");
+            console.log("Removed");
+            moveToDefaultRoom(loggedInUser, history, dispatch);
+          }
+          console.log("after::Members:", oldMembers);
+          dispatch(dispatcher(actionTypes.SET_ROOM, payload));
+          dispatch(dispatcher(actionTypes.STOP_LOADING));
+        });
     });
 };
 
@@ -188,8 +199,8 @@ export const addMember = payload => async dispatch => {
   }
   if (newMem) {
     database()
-      .ref(`rooms/${rid}/members`)
-      .push({
+      .ref(`rooms/${rid}/members/${uid}`)
+      .set({
         name,
         uid
       });
@@ -199,6 +210,11 @@ export const addMember = payload => async dispatch => {
 
 export const removeMember = payload => dispatch => {
   console.log("removing", payload);
+  let updates = {};
+  updates[`/users/${payload.id}/current_room/`] = payload.id;
+  database()
+    .ref()
+    .update(updates);
   database()
     .ref(`/rooms/${payload.rid}/members/${payload.id}`)
     .remove();
