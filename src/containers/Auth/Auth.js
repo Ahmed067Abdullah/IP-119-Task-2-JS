@@ -22,6 +22,14 @@ class SignUp extends Component {
     signUp: false
   };
 
+  // state = {
+  //   email: "",
+  //   password: "",
+  //   rePass: "",
+  //   name: "",
+  //   signUp: false
+  // };
+
   toggleAuthType = () => {
     this.setState(state => ({
       signUp: !state.signUp

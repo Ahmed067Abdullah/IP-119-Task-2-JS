@@ -17,7 +17,6 @@ const reducer = (state = initialState, action) => {
         messages: [...action.payload.messages]
       };
     case actionTypes.SET_MEMBERS:
-    console.log(action);
       return {
         ...state,
         members: [...action.payload]

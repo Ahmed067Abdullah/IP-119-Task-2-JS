@@ -14,11 +14,6 @@ const loginSuccessful = (dispatch, uid, name, history, match) => {
   console.log("login successful", user);
 };
 
-const loginFailed = dispatch => {
-  dispatch(dispatcher(actionTypes.STOP_LOADING));
-  console.log("error in sign in after authenticating");
-};
-
 const authError = (dispatch, msg, type) => {
   dispatch(
     dispatcher(actionTypes.AUTH_ERROR, {
@@ -66,8 +61,8 @@ export const signup = payload => dispatch => {
           name: `${name}'s Default Room`
         });
       await database()
-        .ref(`rooms/${uid}/members`)
-        .push({ name, uid });
+        .ref(`rooms/${uid}/members/${uid}`)
+        .set({ uid });
       loginSuccessful(dispatch, uid, name, history, match);
     })
     .catch(error => {
@@ -123,9 +118,9 @@ export const logout = (history, uid) => async dispatch => {
   let updates = {};
   updates[`/users/${uid}/online`] = false;
   await database()
-  .ref()
-  .update(updates);
-  
+    .ref()
+    .update(updates);
+
   dispatch(dispatcher(actionTypes.LOGOUT));
   localStorage.removeItem("chat-box");
   localStorage.removeItem("chat-box-current-room");
