@@ -9,8 +9,7 @@ const loginSuccessful = (dispatch, uid, name, history, match) => {
   if (match && match.params.id) {
     dispatch(dispatcher(actionTypes.SET_INVITED_ROOM, match.params.id));
     history.replace(`/chatbox/${match.params.id}`);
-  }
-  else if (history) history.replace(`/chatbox/${uid}`);
+  } else if (history) history.replace(`/chatbox/${uid}`);
   dispatch(dispatcher(actionTypes.AUTH_SUCCESSFUL, user));
   console.log("login successful", user);
 };
@@ -38,7 +37,7 @@ export const setSignedIn = user => dispatch => {
 
 export const signup = payload => dispatch => {
   const { name, email, password, rePass, history, match } = payload;
-  const user = { email, name };
+  const user = { email, name, online: true };
 
   if (rePass !== password) {
     authError(dispatch, "Passwords don't match", "errorSignUp");
@@ -88,18 +87,19 @@ export const signin = payload => dispatch => {
   dispatch(dispatcher(actionTypes.START_LOADING));
   auth()
     .signInWithEmailAndPassword(email, password)
-    .then(res => {
+    .then(async res => {
       const uid = res.user.uid;
-      database()
+      const user = await database()
         .ref(`users/${uid}`)
-        .once("value")
-        .then(res => {
-          if (res.val())
-            loginSuccessful(dispatch, uid, res.val().name, history, match);
-        })
-        .catch(err => {
-          loginFailed(dispatch);
-        });
+        .once("value");
+      if (user.val()) {
+        let updates = {};
+        updates[`/users/${uid}/online`] = true;
+        await database()
+          .ref()
+          .update(updates);
+        loginSuccessful(dispatch, uid, user.val().name, history, match);
+      }
     })
     .catch(error => {
       dispatch(dispatcher(actionTypes.STOP_LOADING));
@@ -119,8 +119,13 @@ export const setInvitedRoom = invited_to => {
   };
 };
 
-export const logout = history => dispatch => {
+export const logout = (history, uid) => async dispatch => {
   dispatch(dispatcher(actionTypes.LOGOUT));
+  let updates = {};
+  updates[`/users/${uid}/online`] = false;
+  await database()
+    .ref()
+    .update(updates);
   localStorage.removeItem("chat-box");
   localStorage.removeItem("chat-box-current-room");
   history.replace("/auth");

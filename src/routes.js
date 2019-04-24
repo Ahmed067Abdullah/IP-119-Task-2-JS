@@ -16,6 +16,7 @@ const getRoutes = uid => {
     routes = (
       <Switch>
         <Route path="/chatbox/:id" component={ChatRoom} />
+        <Route path="/auth/:id" exact component={Auth} />
         <Route path="/chatbox/" component={ChatRoom} />
         <Redirect to="/chatbox/" />
       </Switch>

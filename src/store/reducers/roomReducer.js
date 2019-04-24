@@ -13,8 +13,14 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         room: { ...action.payload.room },
-        members: [...action.payload.members],
+        // members: [...action.payload.members],
         messages: [...action.payload.messages]
+      };
+    case actionTypes.SET_MEMBERS:
+    console.log(action);
+      return {
+        ...state,
+        members: [...action.payload]
       };
     case actionTypes.SET_ROOMS_LIST:
       return {

@@ -52,9 +52,9 @@ class ChatBox extends Component {
 
     if (auth.uid) {
       const room = localStorage.getItem("chat-box-current-room");
-      console.log("before::",rid);
+      console.log("before::", rid);
       rid = rid ? rid : room ? room : auth.uid;
-      console.log("after::",rid);
+      console.log("after::", rid);
       getRoomsList(auth.uid);
       if (auth.invited_to) {
         const { invited_to, name, uid } = auth;
@@ -118,8 +118,8 @@ class ChatBox extends Component {
   };
 
   onLogout = () => {
-    const { history, onLogout } = this.props;
-    onLogout(history);
+    const { history, onLogout, auth } = this.props;
+    onLogout(history, auth.uid);
   };
 
   onCreateRoom = () => {
@@ -212,7 +212,7 @@ const mapDispatchToProps = dispatch => {
     addMember: payload => dispatch(actions.addMember(payload)),
     removeMember: payload => dispatch(actions.removeMember(payload)),
     messageClicked: (id, msgs) => dispatch(actions.messageClicked(id, msgs)),
-    onLogout: history => dispatch(logout(history)),
+    onLogout: (history, uid) => dispatch(logout(history, uid))
   };
 };
 

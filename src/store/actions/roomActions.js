@@ -5,57 +5,94 @@ import * as actionTypes from "./actionTypes";
 const isMember = (uid, members) => members.find(member => member.uid === uid);
 
 export const getRoom = (rid, history) => (dispatch, getState) => {
+  // start loading
   dispatch(dispatcher(actionTypes.START_LOADING));
+
   // console.log("fetching for", rid);
+
   let oldMembers = [];
   let flag = false;
   const loggedInUser = getState().auth.uid;
+
+  // putting listener on the users node for online users
+  database()
+    .ref(`/users`)
+    .orderByChild("online")
+    .equalTo(true)
+    .on("value", async onlineUsers => {
+      // all online users
+      onlineUsers = onlineUsers.val();
+      console.log(onlineUsers);
+
+      // all members of that specific room
+      let allMembers = await database()
+        .ref(`/rooms/${rid}/members`)
+        .once("value");
+      console.log(allMembers);
+      allMembers = allMembers.val();
+
+      // if users exist in users node AND in that room
+      if (allMembers && onlineUsers) {
+        const members = [];
+        for (let key in allMembers) {
+          for (let id in onlineUsers) {
+            if (id === allMembers[key].uid) {
+              members.push({ id: key, uid: id, name: onlineUsers[id].name });
+              break;
+            }
+          }
+        }
+        console.log("online mem:", members);
+
+        if (
+          !isMember(loggedInUser, members) &&
+          isMember(loggedInUser, oldMembers)
+        ) {
+          alert(`You're not the a member of room: ${loggedInUser} anymore`);
+          moveToDefaultRoom(loggedInUser, history, dispatch);
+          return;
+        }
+
+        if (flag && oldMembers.length < members.length) {
+          for (let i = 0; i < members.length; i++) {
+            const member = members[i];
+            if (
+              !isMember(member.uid, oldMembers) &
+              (member.uid !== loggedInUser)
+            ) {
+              alert(`${member.name} just joined the room`);
+            }
+          }
+        }
+        console.log("asd");
+        dispatch(dispatcher(actionTypes.SET_MEMBERS, members));
+        oldMembers = [...members];
+        flag = true;
+      }
+    });
+
   database()
     .ref(`/rooms/${rid}`)
     .on("value", snapshot => {
       oldMembers = getState().room.members;
       const roomData = snapshot.val();
       let payload = {};
-      // console.log("fetched", roomData);
+      console.log("fetched", roomData);
 
       if (roomData) {
         const { admin, admin_name, created_at, name } = roomData;
 
-        const members = [];
-        for (let key in roomData.members)
-          members.push({ id: key, ...roomData.members[key] });
-
-        if (
-          !isMember(loggedInUser, members) &&
-          isMember(loggedInUser, oldMembers)
-        ) {
-          alert(`You're removed for the room: ${name}`);
-          moveToDefaultRoom(loggedInUser, history, dispatch);
-          return;
-        }
-
         const messages = [];
         for (let key in roomData.messages)
-          messages.push({ id: key, ...roomData.messages[key], clicked: false });
+          messages.push({
+            id: key,
+            ...roomData.messages[key],
+            clicked: false
+          });
 
         const room = { rid, admin, admin_name, created_at, name };
 
-        payload = { room, members, messages };
-
-        if (flag && oldMembers.length < members.length) {
-          for (let i = 0; i < members.length; i++) {
-            const member = members[i];
-            if (
-              !oldMembers.find(oldMember => oldMember.uid === member.uid) &&
-              member.uid !== loggedInUser
-            ) {
-              alert(`${member.name} just joined the room`);
-            }
-          }
-        }
-
-        oldMembers = [...members];
-        flag = true;
+        payload = { room, messages };
       } else {
         // alert("Room Doesn't exist");
         console.log("Removed");
