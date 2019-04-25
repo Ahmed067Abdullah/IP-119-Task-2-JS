@@ -4,8 +4,10 @@ import classes from "./Input.module.css";
 const input = props => {
   const { placeholder, changed, label, value, type, name } = props;
   return (
-    <div className={classes.input_container}>
-      <label className={classes.input_label} htmlFor={name}>{label}</label>
+    <div>
+      <label className={classes.input_label} htmlFor={name}>
+        {label}
+      </label>
       <input
         id={name}
         name={name}

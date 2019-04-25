@@ -1,8 +1,10 @@
 import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
+// UI Components
 import Button from "../../UI Components/Button/Button";
 
+// stylesheet
 import classes from "./Header.module.css";
 
 const header = props => {

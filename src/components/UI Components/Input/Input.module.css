@@ -1,21 +1,21 @@
-.input_label{
-    width : 140px;
-    text-align: left;
-    color : #457720;
+.input_label {
+  width: 140px;
+  text-align: left;
+  color: #457720;
 }
 
-.input_label:hover{
-    cursor: pointer;
+.input_label:hover {
+  cursor: pointer;
 }
 
-.input_field{
-    width : 200px;
-    border : none;
-    border-bottom : 1px solid #457720;
-    margin : 12px 0;
-    color : #457720;
+.input_field {
+  width: 200px;
+  border: none;
+  border-bottom: 1px solid #457720;
+  margin: 12px 0;
+  color: #457720;
 }
 
-.input_field:focus{
-    outline : none;
+.input_field:focus {
+  outline: none;
 }

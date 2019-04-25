@@ -1,5 +1,7 @@
 import React from "react";
 import Member from "./Member/Member";
+
+// stylesheet
 import classes from "./Members.module.css";
 
 const members = props => {

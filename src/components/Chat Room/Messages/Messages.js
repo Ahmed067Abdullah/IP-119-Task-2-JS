@@ -1,5 +1,7 @@
 import React from "react";
 import Message from "./Message/Message";
+
+// stylesheet
 import classes from "./Messages.module.css";
 
 const messages = props => {

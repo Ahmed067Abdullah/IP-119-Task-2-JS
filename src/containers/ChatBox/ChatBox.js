@@ -17,6 +17,9 @@ import MessageInput from "../../components/Chat Room/MessageInput/MessageInput";
 // base url
 import url from "../../config/baseURL";
 
+// helper func
+import getTimeString from '../../common/getTimeString';
+
 class ChatBox extends Component {
   state = {
     msg: ""
@@ -140,8 +143,6 @@ class ChatBox extends Component {
     alert("Invitation link is copied to the clip board!");
   };
 
-  getTimeString = time => new Date(time).toString().slice(0, 24);
-
   setEl = el => (this.el = el);
 
   render() {
@@ -153,7 +154,7 @@ class ChatBox extends Component {
         <Header
           name={room.name}
           admin_name={room.admin_name}
-          createdAt={this.getTimeString(room.created_at)}
+          createdAt={getTimeString(room.created_at)}
           path={`${url}${room.rid}`}
           onCopy={this.onCopy}
           createRoom={this.onCreateRoom}

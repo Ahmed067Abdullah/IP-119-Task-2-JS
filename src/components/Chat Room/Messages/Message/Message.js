@@ -1,7 +1,11 @@
 import React from "react";
+
+// helper func
+import getTimeString from '../../../../common/getTimeString';
+
+// stylesheet
 import classes from "./Message.module.css";
 
-const getTimeString = time => new Date(time).toString().slice(0, 24);
 
 const message = props => {
   const { posted_by, text, uid, posted_at, clicked, id } = props.message;
@@ -9,13 +13,14 @@ const message = props => {
   let sender = "";
   let msgClass = classes.own;
   let abc = classes.own_msg;
+
   if (!sentByMy) {
     sender = posted_by;
     msgClass = classes.others;
     abc = "";
   }
-
   const show = clicked ? classes.show : "";
+  
   return (
     <div className={classes.message_container}>
       <div className={msgClass}>
