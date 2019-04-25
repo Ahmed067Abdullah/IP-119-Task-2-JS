@@ -65,6 +65,8 @@ class SignUp extends Component {
     // setting default values
     let error = errorSignIn ? errorSignIn : "";
     let heading = "Sign In";
+    let nameField = "";
+    let rePassField = "";
     let toggleText = (
       <p className={classes.auth_toggle_para}>
         <span>New Member? </span>
@@ -86,6 +88,23 @@ class SignUp extends Component {
           </span>
         </p>
       );
+      nameField = (
+        <Input
+          label="Name"
+          changed={this.handleChange}
+          name="name"
+          value={name}
+        />
+      );
+      rePassField = (
+        <Input
+          label="Repeat Password"
+          type="password"
+          changed={this.handleChange}
+          name="rePass"
+          value={rePass}
+        />
+      );
     }
 
     return (
@@ -105,16 +124,7 @@ class SignUp extends Component {
                     value={email}
                   />
 
-                  {signUp ? (
-                    <Input
-                      label="Name"
-                      changed={this.handleChange}
-                      name="name"
-                      value={name}
-                    />
-                  ) : (
-                    ""
-                  )}
+                  {nameField}
 
                   <Input
                     label="Password"
@@ -124,17 +134,7 @@ class SignUp extends Component {
                     value={password}
                   />
 
-                  {signUp ? (
-                    <Input
-                      label="Repeat Password"
-                      type="password"
-                      changed={this.handleChange}
-                      name="rePass"
-                      value={rePass}
-                    />
-                  ) : (
-                    ""
-                  )}
+                  {rePassField}
 
                   <Button
                     className="btn btn-success"

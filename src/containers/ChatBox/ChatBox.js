@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import classes from "./ChatRoom.module.css";
 import { connect } from "react-redux";
 
 // actions
@@ -18,7 +17,10 @@ import MessageInput from "../../components/Chat Room/MessageInput/MessageInput";
 import url from "../../config/baseURL";
 
 // helper func
-import getTimeString from '../../common/getTimeString';
+import getTimeString from "../../common/getTimeString";
+
+// stylesheet
+import classes from "./ChatRoom.module.css";
 
 class ChatBox extends Component {
   state = {
@@ -27,6 +29,8 @@ class ChatBox extends Component {
 
   componentDidMount() {
     this.scrollToBottom();
+
+    // at first, try to show the room to which user is invited
     this.setupRoom(this.props.auth.invited_to);
   }
 
@@ -53,12 +57,23 @@ class ChatBox extends Component {
       addMember
     } = this.props;
 
+    // only proceed iff user is logged in
     if (auth.uid) {
       const room = localStorage.getItem("chat-box-current-room");
-      console.log("before::", rid);
+
+      // rid      ==> invited_to OR the room's id on which user clicked
+      // room     ==> room id stored in local storage
+      // auth.uid ==> user id of the logged in users
+
+      // at first navigate to room where user is invited
+      // if he isn't invited to any then see if any room id is stored in localstorage
+      // if not in localstorage too then navigate to his default room
       rid = rid ? rid : room ? room : auth.uid;
-      console.log("after::", rid);
+
+      // get list of rooms in which logged in user is added
       getRoomsList(auth.uid);
+
+      // if user is invited to a room, then add him as a member in that room and reset invited_to field
       if (auth.invited_to) {
         const { invited_to, name, uid } = auth;
         addMember({
@@ -67,62 +82,13 @@ class ChatBox extends Component {
           uid
         });
         setInvitedRoom("");
-        this.getRoom(getRoom, invited_to, history);
-      } else {
-        this.getRoom(getRoom, rid, history);
       }
-    } else {
-      alert("Please login to continue");
-      setInvitedRoom(rid);
-      history.replace("/auth");
+
+      // now fetch the room, change URL and save room id in localstorage
+      getRoom(rid, history);
+      history.replace(`/chatbox/${rid}`);
+      localStorage.setItem("chat-box-current-room", rid);
     }
-  };
-
-  getRoom = (getRoom, rid, history) => {
-    getRoom(rid, history);
-    history.replace(`/chatbox/${rid}`);
-    localStorage.setItem("chat-box-current-room", rid);
-  };
-
-  handleChange = event => {
-    const { name, value } = event.target;
-    this.setState({
-      [name]: value
-    });
-  };
-
-  send = e => {
-    e.preventDefault();
-    const text = this.state.msg.trim();
-    if (text) {
-      const { sendMessage, room, auth } = this.props;
-      console.log("sending", this.state);
-      sendMessage({
-        text,
-        room: room.room.rid,
-        uid: auth.uid,
-        posted_by: auth.name
-      });
-      this.setState({ msg: "" });
-    }
-  };
-
-  messageClicked = id => {
-    const { messageClicked, room } = this.props;
-    messageClicked(id, [...room.messages]);
-  };
-
-  onRemoveMember = id => {
-    const { removeMember, room , auth} = this.props;
-    removeMember({
-      rid: room.room.rid,
-      id
-    });
-  };
-
-  onLogout = () => {
-    const { history, onLogout, auth } = this.props;
-    onLogout(history, auth.uid);
   };
 
   onCreateRoom = () => {
@@ -139,16 +105,64 @@ class ChatBox extends Component {
     }
   };
 
+  // to change msg value
+  handleChange = event => {
+    const { name, value } = event.target;
+    this.setState({
+      [name]: value
+    });
+  };
+
+  // to send msg
+  send = e => {
+    e.preventDefault();
+    const text = this.state.msg.trim();
+
+    // only send message if not empty string
+    if (text) {
+      const { sendMessage, room, auth } = this.props;
+      sendMessage({
+        text,
+        room: room.room.rid,
+        uid: auth.uid,
+        posted_by: auth.name
+      });
+      this.setState({ msg: "" });
+    }
+  };
+
+  // to show message sending time
+  messageClicked = id => {
+    const { messageClicked, room } = this.props;
+    messageClicked(id, [...room.messages]);
+  };
+
+  onRemoveMember = id => {
+    const { removeMember, room } = this.props;
+    removeMember({
+      rid: room.room.rid,
+      id
+    });
+  };
+
+  // to show popup when link is copied
   onCopy = () => {
     alert("Invitation link is copied to the clip board!");
   };
 
+  // to store reference of the messages div in the variable
   setEl = el => (this.el = el);
+
+  onLogout = () => {
+    const { history, onLogout, auth } = this.props;
+    onLogout(history, auth.uid);
+  };
 
   render() {
     const { messages, members, rooms, room } = this.props.room;
     const { uid, loading } = this.props.auth;
     const { msg } = this.state;
+
     return !loading ? (
       <div className={classes.container}>
         <Header
@@ -160,6 +174,7 @@ class ChatBox extends Component {
           createRoom={this.onCreateRoom}
           logout={this.onLogout}
         />
+
         <div className={classes.main}>
           <div className={classes.members}>
             <Members
@@ -170,6 +185,7 @@ class ChatBox extends Component {
               uid={uid}
             />
           </div>
+
           <div className={classes.messages}>
             <Messages
               messages={messages}
@@ -177,12 +193,14 @@ class ChatBox extends Component {
               setEl={this.setEl}
               messageClicked={this.messageClicked}
             />
+
             <MessageInput
               send={this.send}
               msg={msg}
               changed={this.handleChange}
             />
           </div>
+
           <div className={classes.rooms}>
             <Rooms rooms={rooms} setupRoom={this.setupRoom} cur={room.rid} />
           </div>
@@ -206,13 +224,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     createRoom: payload => dispatch(actions.createRoom(payload)),
+    setInvitedRoom: link => dispatch(setInvitedRoom(link)),
     getRoom: (rid, history) => dispatch(actions.getRoom(rid, history)),
     getRoomsList: uid => dispatch(actions.getRoomsList(uid)),
     sendMessage: text => dispatch(actions.sendMessage(text)),
-    setInvitedRoom: link => dispatch(setInvitedRoom(link)),
+    messageClicked: (id, msgs) => dispatch(actions.messageClicked(id, msgs)),
     addMember: payload => dispatch(actions.addMember(payload)),
     removeMember: payload => dispatch(actions.removeMember(payload)),
-    messageClicked: (id, msgs) => dispatch(actions.messageClicked(id, msgs)),
     onLogout: (history, uid) => dispatch(logout(history, uid))
   };
 };

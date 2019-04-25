@@ -33,7 +33,6 @@ const reducer = (state = initialState, action) => {
       };
     case actionTypes.AUTH_ERROR:
       const { errorMsg, errorType } = action.payload;
-      console.log(action.payload);
       return {
         ...state,
         [errorType]: errorMsg

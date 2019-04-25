@@ -1,11 +1,31 @@
 import dispatcher from "../dispater";
 import { database } from "firebase";
 import * as actionTypes from "./actionTypes";
+import isMember from "../../common/isMember";
 
-const isMember = (uid, members) => members.find(member => member.uid === uid);
-
+// to store DB references
 let usersRef;
 let roomRef;
+
+export const createRoom = payload => async dispatch => {
+  console.log("creating room");
+  const { name, uid, uname, history, setupRoom } = payload;
+  const ref = await database()
+    .ref("/rooms")
+    .push({
+      admin: uid,
+      created_at: Date.now(),
+      name,
+      admin_name: uname
+    }).key;
+
+  await database()
+    .ref(`rooms/${ref}/members`)
+    .push({ name: uname, uid });
+
+  setupRoom(ref);
+  history.replace(`chatbox/${ref}`);
+};
 
 export const getRoom = (rid, history) => (dispatch, getState) => {
   console.log("func called, rid:", rid);
@@ -16,9 +36,9 @@ export const getRoom = (rid, history) => (dispatch, getState) => {
 
   let oldMembers = [];
   const loggedInUser = getState().auth.uid;
-  
-  if(usersRef) usersRef.off();
-  if(roomRef) roomRef.off();
+
+  if (usersRef) usersRef.off();
+  if (roomRef) roomRef.off();
 
   // set current room for the loggged in user
   let updates = {};
@@ -153,9 +173,11 @@ export const getRoomsList = uid => dispatch => {
     });
 };
 
+/************  message actions start **********/
 export const sendMessage = payload => dispatch => {
   const { room, text, uid, posted_by } = payload;
 
+  // push new message to the messages list
   database()
     .ref(`rooms/${room}/messages`)
     .push({
@@ -164,66 +186,43 @@ export const sendMessage = payload => dispatch => {
       posted_by,
       posted_at: Date.now()
     });
-  console.log("sent", payload);
 };
 
-export const createRoom = payload => async dispatch => {
-  console.log("creating room");
-  const { name, uid, uname, history, setupRoom } = payload;
-  const ref = await database()
-    .ref("/rooms")
-    .push({
-      admin: uid,
-      created_at: Date.now(),
-      name,
-      admin_name: uname
-    }).key;
+export const messageClicked = (id, msgs) => dispatch => {
+  // get index of the clicked message
+  const index = msgs.findIndex(msg => msg.id === id);
 
-  await database()
-    .ref(`rooms/${ref}/members`)
-    .push({ name: uname, uid });
-
-  setupRoom(ref);
-  history.replace(`chatbox/${ref}`);
+  // toggle clicked property of the clicked message
+  msgs[index].clicked = !msgs[index].clicked;
+  dispatch(dispatcher(actionTypes.SET_MESSAGES, msgs));
 };
+/************  message actions end **********/
 
+/************  members actions start **********/
 export const addMember = payload => async dispatch => {
   const { uid, rid } = payload;
-  const res = await database()
-    .ref(`rooms/${rid}`)
-    .once("value");
-  const members = res.val().members;
-  let newMem = true;
-  if (members) {
-    for (let id in members) {
-      if (members[id].uid === uid) {
-        newMem = false;
-        break;
-      }
-    }
-  }
-  if (newMem) {
-    database()
-      .ref(`rooms/${rid}/members/${uid}`)
-      .set({ uid });
-  }
-  console.log("new member:", newMem);
+  const memberRef = database().ref(`rooms/${rid}/members/${uid}`);
+
+  // try to get this user from members list of the room
+  const res = await memberRef.once("value");
+
+  // if not found then add to the members list
+  if (!res.val()) memberRef.set({ uid });
 };
 
 export const removeMember = payload => dispatch => {
   console.log("removing", payload);
+
+  // change user's current room to his default room
   let updates = {};
   updates[`/users/${payload.id}/current_room/`] = payload.id;
   database()
     .ref()
     .update(updates);
+
+  // remove user from members' list of the room
   database()
     .ref(`/rooms/${payload.rid}/members/${payload.id}`)
     .remove();
 };
-
-export const messageClicked = (id, msgs) => dispatch => {
-  const index = msgs.findIndex(msg => msg.id === id);
-  msgs[index].clicked = !msgs[index].clicked;
-  dispatch(dispatcher(actionTypes.SET_MESSAGES, msgs));
-};
+/************  members actions end **********/

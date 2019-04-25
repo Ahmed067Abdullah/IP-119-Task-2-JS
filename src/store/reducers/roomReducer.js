@@ -13,7 +13,6 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         room: { ...action.payload.room },
-        // members: [...action.payload.members],
         messages: [...action.payload.messages]
       };
     case actionTypes.SET_MEMBERS:
