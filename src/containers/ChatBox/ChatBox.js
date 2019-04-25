@@ -92,14 +92,13 @@ class ChatBox extends Component {
   };
 
   onCreateRoom = () => {
-    const name = prompt("Choose Name for the new room").trim();
-    if (name) {
-      const { createRoom, auth, history } = this.props;
+    const name = prompt("Choose Name for the new room");
+    if (name && name.trim()) {
+      const { createRoom, auth } = this.props;
       createRoom({
-        name,
+        name: name.trim(),
         uid: auth.uid,
         uname: auth.name,
-        history,
         setupRoom: this.setupRoom
       });
     }
