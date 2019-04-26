@@ -1,21 +1,27 @@
 .member {
   color: white;
-  width: 80%;
-  background-color: #314f1a;
-  margin: 15px auto;
-  min-height: 35px;
-  border-radius: 10px;
+  width: 100%;
+  background-color: #e4f3f6;
+  min-height: 60px;
+  border-bottom: 1px solid #dedede;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #dfffc1;
+  color: #797c7c;
   word-wrap: break-word;
   padding: 5px 3px;
+  font-size: 20px;
+}
+
+.member:hover{
+  background-color: #98d1dd;
 }
 
 .own {
-  background-color: #3d7d30;
+  background-color: #2bbfd9;
+  color: #fff;
 }
+
 
 .remove {
   color: red;

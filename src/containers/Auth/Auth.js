@@ -137,7 +137,7 @@ class SignUp extends Component {
                   {rePassField}
 
                   <Button
-                    className="btn btn-success"
+                    className="btn btn-primary"
                     clicked={this.handleSubmit}
                   >
                     {heading}

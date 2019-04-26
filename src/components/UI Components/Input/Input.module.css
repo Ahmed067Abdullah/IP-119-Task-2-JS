@@ -1,7 +1,8 @@
 .input_label {
   width: 140px;
   text-align: left;
-  color: #457720;
+  color: #2BBFD9;
+  font-weight: bold;
 }
 
 .input_label:hover {
@@ -11,9 +12,9 @@
 .input_field {
   width: 200px;
   border: none;
-  border-bottom: 1px solid #457720;
+  border-bottom: 1px solid #2BBFD9;
   margin: 12px 0;
-  color: #457720;
+  color: #2BBFD9;
 }
 
 .input_field:focus {

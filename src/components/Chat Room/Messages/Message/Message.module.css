@@ -18,14 +18,13 @@
 }
 
 .text {
-  color: white;
   align-self: flex-end;
-  max-width: 550px;
+  max-width: 40vw;
   display: inline-block;
-  background-color: #314f1a;
+  background-color: #E4F3F6;
   min-height: 35px;
   border-radius: 10px;
-  color: #dfffc1;
+  color: #797C7C;
   word-wrap: break-word;
   padding: 5px 8px;
   margin: 0;
@@ -33,6 +32,7 @@
 
 .text:hover{
   cursor: pointer;
+  background-color: #98d1dd;
 }
 
 .time {
@@ -49,5 +49,6 @@
 }
 
 .own_msg {
-  background-color: #3d7d30;
+  background-color: #2bbfd9;
+  color: #fff;
 }

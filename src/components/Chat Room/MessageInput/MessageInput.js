@@ -17,9 +17,9 @@ const messageInput = props => {
         />
         <Button
           clicked={props.send}
-          className={`btn btn-success ${classes.send_btn}`}
+          className={`btn btn-primary ${classes.send_btn}`}
         >
-          Send
+          <i className="fas fa-paper-plane" />
         </Button>
       </form>
     </div>

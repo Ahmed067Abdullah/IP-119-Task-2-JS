@@ -20,10 +20,14 @@ const header = props => {
       </p>
 
       <CopyToClipboard onCopy={onCopy} text={path}>
-        <button className="btn btn-info">Get Invitation Link</button>
+        <button className={`btn btn-warning ${classes.invite}`}>Get Invitation Link</button>
       </CopyToClipboard>
-      <Button className="btn btn-success" clicked={createRoom}>Create Room</Button>
-      <Button className="btn btn-danger" clicked={logout}>Logout</Button>
+      <Button className="btn btn-success" clicked={createRoom}>
+        <i className={`fas fa-plus-circle ${classes.icon}`}></i>
+      </Button>
+      <Button className="btn btn-danger" clicked={logout}>
+        <i className={`fas fa-sign-out-alt ${classes.icon}`}></i>
+      </Button>
     </div>
   );
 };

@@ -5,7 +5,7 @@ import Message from "./Message/Message";
 import classes from "./Messages.module.css";
 
 const messages = props => {
-  let messages = "No messages to show";
+  let messages = <p className={classes.no_messages}>No messages to show</p>;
 
   if (props.messages && props.messages.length > 0) {
     messages = props.messages.map(message => (

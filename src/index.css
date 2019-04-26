@@ -7,7 +7,7 @@ body {
   padding: 0;
   height : 92%;
   overflow: hidden;
-  background-color: #cdffa1;
+  background-color: #f9f9f9;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
@@ -27,15 +27,15 @@ code {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #8bb07f; 
+  background: #98d1dd; 
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #659658; 
+  background: #72c0d0; 
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #457720; 
+  background: #2BBFD9; 
 }

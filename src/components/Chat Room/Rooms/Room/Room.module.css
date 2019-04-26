@@ -1,22 +1,23 @@
 .room {
-  color: white;
-  width: 80%;
-  background-color: #314f1a;
-  margin: 15px auto;
-  min-height: 35px;
-  border-radius: 10px;
+  width: 100%;
+  background-color: #E4F3F6;
+  min-height: 65px;
+  border-bottom: 1px solid #DEDEDE;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #dfffc1;
+  color: #797C7C;
   word-wrap: break-word;
   padding : 5px 3px;
+  font-size: 20px;
 }
 
 .room:hover {
   cursor: pointer;
+  background-color: #98d1dd;
 }
 
 .current_room{
-  background-color: #3d7d30;   
+  background-color: #2BBFD9;  
+  color : #FFF; 
 }

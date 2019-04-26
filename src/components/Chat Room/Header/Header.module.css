@@ -1,24 +1,37 @@
-.header{
-    display: flex;
-    height : 60px;
-    position : fixed;
-    top : 0;
-    left : 0;
-    width: 100%;
-    background-color: #314f1a;
-    justify-content: space-around;
-    align-items: center;
-    color : #dfffc1;
+.header {
+  display: flex;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #2bbfd9;
+  justify-content: space-around;
+  align-items: center;
+  color: #fff;
 }
 
-.header > *{
-    margin : 0 10px;
+.header > * {
+  margin: 0 5px;
 }
 
-.room_info{
-    margin-right: auto;
+.room_info {
+  margin-right: auto;
 }
 
-.info_val{
-    font-weight: bold;
+.info_val {
+  font-weight: bold;
+}
+
+.icon {
+  font-size: 24px;
+}
+
+.invite {
+  font-size: 18px;
+  color: white;
+}
+
+.invite:hover {
+  color: white;
 }

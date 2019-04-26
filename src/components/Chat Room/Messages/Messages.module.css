@@ -2,3 +2,8 @@
   overflow-y: scroll;
   height: 94%;
 }
+
+.no_messages{
+  margin-top : 15px;
+  color : #2bbfd9;
+}
