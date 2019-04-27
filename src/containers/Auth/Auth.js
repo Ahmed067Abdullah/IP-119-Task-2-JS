@@ -14,21 +14,21 @@ import Spinner from "../../components/UI Components/Spinner/Spinner";
 import classes from "./Auth.module.css";
 
 class SignUp extends Component {
-  state = {
-    email: "a@gmail.com",
-    password: "123456",
-    rePass: "123456",
-    name: "Ahmed",
-    signUp: false
-  };
-
   // state = {
-  //   email: "",
-  //   password: "",
-  //   rePass: "",
-  //   name: "",
+  //   email: "a@gmail.com",
+  //   password: "123456",
+  //   rePass: "123456",
+  //   name: "Ahmed",
   //   signUp: false
   // };
+
+  state = {
+    email: "",
+    password: "",
+    rePass: "",
+    name: "",
+    signUp: false
+  };
 
   toggleAuthType = () => {
     this.setState(state => ({

@@ -22,11 +22,13 @@ const header = props => {
       <CopyToClipboard onCopy={onCopy} text={path}>
         <button className={`btn btn-warning ${classes.invite}`}>Get Invitation Link</button>
       </CopyToClipboard>
-      <Button className="btn btn-success" clicked={createRoom}>
+      <Button className={`btn btn-success ${classes.btn1}`} clicked={createRoom}>
         <i className={`fas fa-plus-circle ${classes.icon}`}></i>
+        <span className={classes.tooltiptext}>Create new room</span>
       </Button>
-      <Button className="btn btn-danger" clicked={logout}>
+      <Button className={`btn btn-danger ${classes.btn2}`} clicked={logout}>
         <i className={`fas fa-sign-out-alt ${classes.icon}`}></i>
+        <span className={classes.tooltiptext}>Sign out</span>
       </Button>
     </div>
   );

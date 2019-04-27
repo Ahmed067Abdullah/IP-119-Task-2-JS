@@ -24,10 +24,43 @@
 
 
 .remove {
-  color: red;
+  color: #bd2130;
   margin-left: 10px;
+  position: relative;
 }
 
 .remove:hover {
   cursor: pointer;
 }
+
+.remove .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  padding : 5px 10px;
+  background-color: #bd2130;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  font-size : 17px;
+  position: absolute;
+  z-index: 1;
+  top: 141%;
+  left: 195%;
+  margin-left: -60px;
+}
+
+.remove .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #bd2130 transparent;
+}
+
+.remove:hover .tooltiptext {
+  visibility: visible;
+}
+

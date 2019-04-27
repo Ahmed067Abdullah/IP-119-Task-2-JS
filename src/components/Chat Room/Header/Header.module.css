@@ -32,6 +32,76 @@
   color: white;
 }
 
-.invite:hover {
-  color: white;
+.invite:hover, .invite:active, .invite:focus {
+  color: white !important;
+}
+
+/* for tool tips */
+.btn1 {
+  position: relative;
+}
+
+.btn1 .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  padding : 5px 10px;
+  background-color: #2bbfd9;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: 141%;
+  left: 30%;
+  margin-left: -60px;
+}
+
+.btn1 .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #2bbfd9 transparent;
+}
+
+.btn1:hover .tooltiptext {
+  visibility: visible;
+}
+/* sad */
+
+.btn2 {
+  position: relative;
+}
+
+.btn2 .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  padding : 5px 10px;
+  background-color: #2bbfd9;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: 141%;
+  left: 55%;
+  margin-left: -60px;
+}
+
+.btn2 .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 75%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #2bbfd9 transparent;
+}
+
+.btn2:hover .tooltiptext {
+  visibility: visible;
 }
